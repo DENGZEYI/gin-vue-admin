@@ -1,5 +1,7 @@
 import { formatTimeToStr } from '@/utils/date'
 import { getDict } from '@/utils/dictionary'
+//应用层字典
+import {getBusDict} from '@/utils/bus_dictionary'
 
 export const formatBoolean = (bool) => {
   if (bool !== null) {
@@ -24,5 +26,10 @@ export const filterDict = (value, options) => {
 
 export const getDictFunc = async(type) => {
   const dicts = await getDict(type)
+  return dicts
+}
+
+export const getBusDictFunc = async(type) => {
+  const dicts = await getBusDict(type)
   return dicts
 }
