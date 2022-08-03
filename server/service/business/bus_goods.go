@@ -71,10 +71,3 @@ func (busGoodsService *BusGoodsService) GetBusGoodsInfoList(info businessReq.Bus
 	err = db.Limit(limit).Offset(offset).Find(&busGoodss).Error
 	return busGoodss, total, err
 }
-
-// GetBusGroupDict 获取Group字典
-func (busProviderService *BusProviderService) GetBusGroupDict() (list []business.BusGroup, err error) {
-	var busGroups []business.BusGroup
-	err = global.GVA_DB.Find(&busGroups).Error
-	return busGroups, err
-}

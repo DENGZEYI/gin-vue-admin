@@ -61,3 +61,12 @@ func (busGroupService *BusGroupService) GetBusGroupInfoList(info businessReq.Bus
 	err = db.Limit(limit).Offset(offset).Find(&busGroups).Error
 	return busGroups, total, err
 }
+
+// GetBusGroupDict 获取Group字典
+func (busGroupService *BusGroupService) GetBusGroupDict() (list []business.BusGroup, err error) {
+	// 创建db
+	db := global.GVA_DB.Model(&business.BusGroup{})
+	var busGroups []business.BusGroup
+	err = db.Find(&busGroups).Error
+	return busGroups, err
+}

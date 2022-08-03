@@ -64,7 +64,9 @@ func (busProviderService *BusProviderService) GetBusProviderInfoList(info busine
 
 // GetBusProviderDict 获取Provider字典
 func (busProviderService *BusProviderService) GetBusProviderDict() (list []business.BusProvider, err error) {
+	// 创建db
+	db := global.GVA_DB.Model(&business.BusProvider{})
 	var busProviders []business.BusProvider
-	err = global.GVA_DB.Find(&busProviders).Error
+	err = db.Find(&busProviders).Error
 	return busProviders, err
 }

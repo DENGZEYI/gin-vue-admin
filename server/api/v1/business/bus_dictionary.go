@@ -33,7 +33,7 @@ func (busProviderApi *BusDictionaryApi) FindBusDictionary(c *gin.Context) {
 			response.OkWithData(gin.H{"rebusProvidersDict": rebusProvidersDict}, c)
 		}
 	} else if dictInfo.DictName == "group" {
-		if rebusGroupDict, err := busProviderService.GetBusGroupDict(); err != nil {
+		if rebusGroupDict, err := busGroupService.GetBusGroupDict(); err != nil {
 			global.GVA_LOG.Error("查询失败!", zap.Error(err))
 			response.FailWithMessage("查询失败", c)
 		} else {
