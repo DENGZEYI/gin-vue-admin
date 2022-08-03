@@ -55,7 +55,7 @@
         <el-table-column align="left" label="factory字段" prop="factory" width="120" />
         <el-table-column align="left" label="specification字段" prop="specification" width="120" />
         <el-table-column align="left" label="groupId字段" prop="groupId" width="120" >
-        <template #default="scope">{{ filterDict(scope.row.ProviderID,groupOptions) }}</template>
+        <template #default="scope">{{ filterDict(scope.row.GroupID,groupOptions) }}</template>
         </el-table-column>
         <!-- ProviderID 注意名称大小写 -->
         <el-table-column align="left" label="providerId字段" prop="ProviderID" width="120" >
@@ -95,13 +95,13 @@
           <el-input v-model="formData.specification" :clearable="true"  placeholder="请输入" />
         </el-form-item>
 
-        <el-form-item label="组别:" prop="groupId">
-          <el-select v-model="formData.groupId" placeholder="请选择" :clearable="true">
+        <el-form-item label="组别:" prop="GroupID">
+          <el-select v-model="formData.GroupID" placeholder="请选择" :clearable="true">
             <el-option v-for="(item,key) in groupOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="供应商:" prop="providerId">
-          <el-select v-model="formData.providerId" placeholder="请选择" :clearable="true">
+        <el-form-item label="供应商:" prop="ProviderID">
+          <el-select v-model="formData.ProviderID" placeholder="请选择" :clearable="true">
             <el-option v-for="(item,key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -145,8 +145,8 @@ const formData = ref({
         price: 0,
         factory: '',
         specification: '',
-        groupId: undefined,
-        providerId: undefined,
+        GroupID: undefined,
+        ProviderID: undefined,
         })
 
 // 验证规则
@@ -314,8 +314,8 @@ const closeDialog = () => {
         price: 0,
         factory: '',
         specification: '',
-        groupId: 0,
-        providerId: 0,
+        GroupID: undefined,
+        ProviderID: undefined,
         }
 }
 // 弹窗确定
