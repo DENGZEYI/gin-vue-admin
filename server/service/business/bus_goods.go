@@ -54,10 +54,27 @@ func (busGoodsService *BusGoodsService) GetBusGoodsInfoList(info businessReq.Bus
 	db := global.GVA_DB.Model(&business.BusGoods{})
 	var busGoodss []business.BusGoods
 	// 如果有条件搜索 下方会自动创建搜索语句
+	if info.GroupID != nil {
+		// 避免使用sql关键词GROUP，所以需要使用`进行转义
+		db = db.Where("`group_id` = ?", info.GroupID)
+	}
+	if info.ProviderID != nil {
+		db = db.Where("`provider_id` = ?", info.ProviderID)
+	}
+	if info.Name != "" {
+		db = db.Where("name LIKE ?", "%"+info.Name+"%")
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
 	}
 	err = db.Limit(limit).Offset(offset).Find(&busGoodss).Error
 	return busGoodss, total, err
+}
+
+// GetBusGroupDict 获取Group字典
+func (busProviderService *BusProviderService) GetBusGroupDict() (list []business.BusGroup, err error) {
+	var busGroups []business.BusGroup
+	err = global.GVA_DB.Find(&busGroups).Error
+	return busGroups, err
 }

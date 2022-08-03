@@ -2,22 +2,6 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <!-- 供应商 -->
-        <el-form-item label="供应商" prop="ProviderID">
-          <el-select v-model="searchInfo.ProviderID" clearable placeholder="请选择" @clear="()=>{searchInfo.group=undefined}">
-            <el-option v-for="(item,key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <!-- 组别 -->
-        <el-form-item label="组别" prop="GroupID">
-          <el-select v-model="searchInfo.GroupID" clearable placeholder="请选择" @clear="()=>{searchInfo.group=undefined}">
-            <el-option v-for="(item,key) in groupOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <!-- 名称 -->
-        <el-form-item label="名称">
-          <el-input v-model="searchInfo.name" placeholder="搜索条件" />
-        </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
           <el-button size="small" icon="refresh" @click="onReset">重置</el-button>
@@ -51,19 +35,9 @@
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column align="left" label="name字段" prop="name" width="120" />
-        <el-table-column align="left" label="price字段" prop="price" width="120" />
-        <el-table-column align="left" label="factory字段" prop="factory" width="120" />
-        <el-table-column align="left" label="specification字段" prop="specification" width="120" />
-        <el-table-column align="left" label="groupId字段" prop="groupId" width="120" >
-        <template #default="scope">{{ filterDict(scope.row.ProviderID,groupOptions) }}</template>
-        </el-table-column>
-        <!-- ProviderID 注意名称大小写 -->
-        <el-table-column align="left" label="providerId字段" prop="ProviderID" width="120" >
-          <template #default="scope">{{ filterDict(scope.row.ProviderID,providerOptions) }}</template>
-        </el-table-column>
         <el-table-column align="left" label="按钮组">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" size="small" class="table-button" @click="updateBusGoodsFunc(scope.row)">变更</el-button>
+            <el-button type="primary" link icon="edit" size="small" class="table-button" @click="updateBusGroupFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -85,27 +59,6 @@
         <el-form-item label="name字段:"  prop="name" >
           <el-input v-model="formData.name" :clearable="true"  placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="price字段:"  prop="price" >
-          <el-input v-model.number="formData.price" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="factory字段:"  prop="factory" >
-          <el-input v-model="formData.factory" :clearable="true"  placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="specification字段:"  prop="specification" >
-          <el-input v-model="formData.specification" :clearable="true"  placeholder="请输入" />
-        </el-form-item>
-
-        <el-form-item label="组别:" prop="groupId">
-          <el-select v-model="formData.groupId" placeholder="请选择" :clearable="true">
-            <el-option v-for="(item,key) in groupOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="供应商:" prop="providerId">
-          <el-select v-model="formData.providerId" placeholder="请选择" :clearable="true">
-            <el-option v-for="(item,key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-      
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -119,34 +72,28 @@
 
 <script>
 export default {
-  name: 'BusGoods'
+  name: 'BusGroup'
 }
 </script>
 
 <script setup>
 import {
-  createBusGoods,
-  deleteBusGoods,
-  deleteBusGoodsByIds,
-  updateBusGoods,
-  findBusGoods,
-  getBusGoodsList
-} from '@/api/busGoods'
+  createBusGroup,
+  deleteBusGroup,
+  deleteBusGroupByIds,
+  updateBusGroup,
+  findBusGroup,
+  getBusGroupList
+} from '@/api/busGroup'
 
 // 全量引入格式化工具 请按需保留
-import { formatDate,getBusDictFunc, formatBoolean, filterDict } from '@/utils/format'
+import { getDictFunc, formatDate, formatBoolean, filterDict } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
-
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
         name: '',
-        price: 0,
-        factory: '',
-        specification: '',
-        groupId: undefined,
-        providerId: undefined,
         })
 
 // 验证规则
@@ -194,7 +141,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getBusGoodsList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getBusGroupList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -208,15 +155,12 @@ getTableData()
 // ============== 表格控制部分结束 ===============
 
 // 获取需要的字典 可能为空 按需保留
-const providerOptions = ref([])
-const groupOptions = ref([])
 const setOptions = async () =>{
-  providerOptions.value = await getBusDictFunc('provider')
-  groupOptions.value = await getBusDictFunc('group')
 }
 
 // 获取需要的字典 可能为空 按需保留
 setOptions()
+
 
 // 多选数据
 const multipleSelection = ref([])
@@ -232,7 +176,7 @@ const deleteRow = (row) => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-            deleteBusGoodsFunc(row)
+            deleteBusGroupFunc(row)
         })
     }
 
@@ -254,7 +198,7 @@ const onDelete = async() => {
         multipleSelection.value.map(item => {
           ids.push(item.ID)
         })
-      const res = await deleteBusGoodsByIds({ ids })
+      const res = await deleteBusGroupByIds({ ids })
       if (res.code === 0) {
         ElMessage({
           type: 'success',
@@ -272,19 +216,19 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updateBusGoodsFunc = async(row) => {
-    const res = await findBusGoods({ ID: row.ID })
+const updateBusGroupFunc = async(row) => {
+    const res = await findBusGroup({ ID: row.ID })
     type.value = 'update'
     if (res.code === 0) {
-        formData.value = res.data.rebusGoods
+        formData.value = res.data.rebusGroup
         dialogFormVisible.value = true
     }
 }
 
 
 // 删除行
-const deleteBusGoodsFunc = async (row) => {
-    const res = await deleteBusGoods({ ID: row.ID })
+const deleteBusGroupFunc = async (row) => {
+    const res = await deleteBusGroup({ ID: row.ID })
     if (res.code === 0) {
         ElMessage({
                 type: 'success',
@@ -311,11 +255,6 @@ const closeDialog = () => {
     dialogFormVisible.value = false
     formData.value = {
         name: '',
-        price: 0,
-        factory: '',
-        specification: '',
-        groupId: 0,
-        providerId: 0,
         }
 }
 // 弹窗确定
@@ -325,13 +264,13 @@ const enterDialog = async () => {
               let res
               switch (type.value) {
                 case 'create':
-                  res = await createBusGoods(formData.value)
+                  res = await createBusGroup(formData.value)
                   break
                 case 'update':
-                  res = await updateBusGoods(formData.value)
+                  res = await updateBusGroup(formData.value)
                   break
                 default:
-                  res = await createBusGoods(formData.value)
+                  res = await createBusGroup(formData.value)
                   break
               }
               if (res.code === 0) {

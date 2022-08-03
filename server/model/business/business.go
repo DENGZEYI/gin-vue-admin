@@ -40,9 +40,9 @@ type BusGoods struct {
 	Price         int    `json:"price" form:"price" `
 	Factory       string `json:"factory" form:"factory" `
 	Specification string `json:"specification" form:"specification" `
-	GroupID       int
+	GroupID       *int
 	Group         BusGroup `gorm:"foreignKey:GroupID"`
-	ProviderID    int
+	ProviderID    *int
 	Provider      BusProvider `gorm:"foreignKey:ProviderID"`
 }
 
