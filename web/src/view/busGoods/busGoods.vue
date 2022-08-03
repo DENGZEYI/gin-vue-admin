@@ -50,15 +50,15 @@
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="name字段" prop="name" width="120" />
-        <el-table-column align="left" label="price字段" prop="price" width="120" />
-        <el-table-column align="left" label="factory字段" prop="factory" width="120" />
-        <el-table-column align="left" label="specification字段" prop="specification" width="120" />
-        <el-table-column align="left" label="groupId字段" prop="groupId" width="120" >
+        <el-table-column align="left" label="名称" prop="name" width="120" />
+        <el-table-column align="left" label="价格" prop="price" width="120" />
+        <el-table-column align="left" label="生产厂商" prop="factory" width="120" />
+        <el-table-column align="left" label="规格" prop="specification" width="120" />
+        <el-table-column align="left" label="组别" prop="groupId" width="120" >
         <template #default="scope">{{ filterDict(scope.row.GroupID,groupOptions) }}</template>
         </el-table-column>
         <!-- ProviderID 注意名称大小写 -->
-        <el-table-column align="left" label="providerId字段" prop="ProviderID" width="120" >
+        <el-table-column align="left" label="供应商" prop="ProviderID" width="120" >
           <template #default="scope">{{ filterDict(scope.row.ProviderID,providerOptions) }}</template>
         </el-table-column>
         <el-table-column align="left" label="按钮组">
@@ -82,16 +82,16 @@
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
       <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
-        <el-form-item label="name字段:"  prop="name" >
+        <el-form-item label="名称:"  prop="name" >
           <el-input v-model="formData.name" :clearable="true"  placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="price字段:"  prop="price" >
+        <el-form-item label="价格:"  prop="price" >
           <el-input v-model.number="formData.price" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="factory字段:"  prop="factory" >
+        <el-form-item label="生产厂商:"  prop="factory" >
           <el-input v-model="formData.factory" :clearable="true"  placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="specification字段:"  prop="specification" >
+        <el-form-item label="规格:"  prop="specification" >
           <el-input v-model="formData.specification" :clearable="true"  placeholder="请输入" />
         </el-form-item>
 
