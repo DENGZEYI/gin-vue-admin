@@ -49,6 +49,22 @@ export const deleteBusGoodsByIds = (data) => {
 }
 
 // @Tags BusGoods
+// @Summary 提交申请
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.IdsReq true "批量删除BusGoods"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
+// @Router /busGoods/applyGoodsByIds [post]
+export const applyGoodsByIds = (data) => {
+  return service({
+    url: '/busGoods/applyGoodsByIds',
+    method: 'post',
+    data
+  })
+}
+
+// @Tags BusGoods
 // @Summary 更新BusGoods
 // @Security ApiKeyAuth
 // @accept application/json

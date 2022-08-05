@@ -24,6 +24,7 @@
         </el-form-item>
       </el-form>
     </div>
+    <!-- Goods表格 -->
     <div class="gva-table-box">
         <div class="gva-btn-list">
             <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
@@ -65,6 +66,7 @@
             <template #default="scope">
             <el-button type="primary" link icon="edit" size="small" class="table-button" @click="updateBusGoodsFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
+            <el-button type="primary" link icon="DocumentAdd" size="small" @click="addRow(scope.row)">添加</el-button>
             </template>
         </el-table-column>
         </el-table>
@@ -80,6 +82,46 @@
             />
         </div>
     </div>
+
+    <!-- 申请Goods表格 -->
+    <div class="gva-table-box">
+      <!-- 表格按钮 -->
+      <div class="gva-btn-list">
+            <el-popover v-model:visible="selectedDataSubVisible" placement="top" width="160">
+            <p>确定要提交吗？</p>
+            <div style="text-align: right; margin-top: 8px;">
+                <el-button size="small" type="primary" link @click="selectedDataSubVisible = false">取消</el-button>
+                <el-button size="small" type="primary" @click="onSubmitSelectedData">确定</el-button>
+            </div>
+            <template #reference>
+                <el-button icon="checked" size="small" style="margin-left: 10px;" :disabled="!selectedData.length" @click="selectedDataSubVisible = true">提交</el-button>
+            </template>
+            </el-popover>
+        </div>
+      <!-- 表格主体 -->
+      <el-table
+        ref="multipleTable"
+        style="width: 100%"
+        tooltip-effect="dark"
+        :data="selectedData"
+        row-key="ID">
+        <el-table-column align="left" label="名称" prop="name" width="120" />
+        <el-table-column align="left" label="数量" prop="number" width="120" >
+          <template #default="scope">
+            <input type="text" v-model="scope.row.number" v-show="scope.row.iseditor" />
+            <span v-show="!scope.row.iseditor">{{scope.row.number}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="操作">
+          <template #default="scope">
+            <el-button type="warning" @click="edit(scope.row, scope)">编辑</el-button>
+            <el-button type="danger" @click="save(scope.row)">保存</el-button>
+          </template>
+        </el-table-column>
+        </el-table>
+      </div>
+
+    <!-- Goods表格弹窗 -->
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
       <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
         <el-form-item label="名称:"  prop="name" >
@@ -105,7 +147,6 @@
             <el-option v-for="(item,key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-      
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -130,7 +171,8 @@ import {
   deleteBusGoodsByIds,
   updateBusGoods,
   findBusGoods,
-  getBusGoodsList
+  getBusGoodsList,
+  applyGoodsByIds
 } from '@/api/busGoods'
 
 // 全量引入格式化工具 请按需保留
@@ -166,6 +208,7 @@ const page = ref(1)
 const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
+const selectedData = ref([])
 const searchInfo = ref({})
 
 // 重置
@@ -236,6 +279,45 @@ const deleteRow = (row) => {
         })
     }
 
+// selectedData提交标记
+const selectedDataSubVisible = ref(false)
+
+// 将所选行的内容添加到selectedData中
+const addRow = (row) => {
+  var selectedFlag = 0 //标识当前元素是否已经存在于字典中
+  selectedData.value.forEach(element => {
+    if (row.ID === element.ID){
+      selectedFlag= 1
+    } 
+  });
+  if (selectedFlag==1){
+    return
+  }
+  selectedData.value.push({ID:row.ID,name:row.name,number:0,iseditor:false})
+}
+
+// 修改selectedData中的数量
+const edit=(row)=>{
+  row.iseditor = true;
+}
+const save=(row)=>{
+  row.iseditor = false;
+}
+
+const onSubmitSelectedData = async() =>{
+  const ids = []
+  selectedData.value &&selectedData.value.map(item => {
+          ids.push({ID:item.ID,number:item.number})
+        })
+  const res= await applyGoodsByIds({ids})
+  if (res.code === 0) {
+        ElMessage({
+          type: 'success',
+          message: '成功提交申请'
+        })
+        deleteVisible.value = false
+      }
+}
 
 // 批量删除控制标记
 const deleteVisible = ref(false)
@@ -344,6 +426,9 @@ const enterDialog = async () => {
               }
       })
 }
+
+
+
 </script>
 
 <style>
