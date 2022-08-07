@@ -61,3 +61,21 @@ func (busOrderService *BusOrderService) GetBusOrderInfoList(info businessReq.Bus
 	err = db.Limit(limit).Offset(offset).Find(&busOrders).Error
 	return busOrders, total, err
 }
+
+// GetBusStateDict 获取申请表中的State字典
+func (busOrderService *BusOrderService) GetBusStateDict() (list []global.ApplyState, err error) {
+	var applyStateDict []global.ApplyState
+	applyStateDict = append(applyStateDict, global.ApplyState{
+		ID:   global.Processing,
+		Name: "申请中",
+	})
+	applyStateDict = append(applyStateDict, global.ApplyState{
+		ID:   global.Pass,
+		Name: "通过",
+	})
+	applyStateDict = append(applyStateDict, global.ApplyState{
+		ID:   global.Fail,
+		Name: "不通过",
+	})
+	return applyStateDict, nil
+}
