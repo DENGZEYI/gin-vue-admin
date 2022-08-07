@@ -19,7 +19,7 @@ export const useBusDictionaryStore = defineStore('busDictionary', () => {
       if (res.code === 0) {
         const dictionaryRes = {}
         const dict = []
-        res.data.rebusProvidersDict && res.data.rebusProvidersDict.forEach(item => {
+        res.data.rebusDict && res.data.rebusDict.forEach(item => {
           dict.push({
             label: item.name,
             value: item.ID
