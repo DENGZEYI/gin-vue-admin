@@ -315,7 +315,7 @@ const onSubmitSelectedData = async() =>{
           type: 'success',
           message: '成功提交申请'
         })
-        deleteVisible.value = false
+        selectedDataSubVisible.value = false
       }
 }
 

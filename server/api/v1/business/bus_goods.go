@@ -155,3 +155,23 @@ func (busGoodsApi *BusGoodsApi) GetBusGoodsList(c *gin.Context) {
 		}, "获取成功", c)
 	}
 }
+
+// applyGoodsByIds 申请Goods
+// @Tags BusGoods
+// @Summary 分页获取BusGoods列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query businessReq.BusGoodsSearch true "分页获取BusGoods列表"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"申请成功"}"
+// @Router /busGoods/applyGoodsByIds [post]
+func (busGoodsApi *BusGoodsApi) ApplyGoodsByIds(c *gin.Context) {
+	var applyInfo businessReq.BusApplyInfo
+	_ = c.ShouldBindJSON(&applyInfo)
+	if err := busGoodsService.ApplyGoodsByIds(applyInfo, c); err != nil {
+		global.GVA_LOG.Error("申请失败!", zap.Error(err))
+		response.FailWithMessage("申请失败", c)
+	} else {
+		response.OkWithMessage("申请成功", c)
+	}
+}

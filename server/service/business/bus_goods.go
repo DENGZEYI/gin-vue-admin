@@ -5,6 +5,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business"
 	businessReq "github.com/flipped-aurora/gin-vue-admin/server/model/business/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/gin-gonic/gin"
 )
 
 type BusGoodsService struct {
@@ -70,4 +72,40 @@ func (busGoodsService *BusGoodsService) GetBusGoodsInfoList(info businessReq.Bus
 	}
 	err = db.Limit(limit).Offset(offset).Find(&busGoodss).Error
 	return busGoodss, total, err
+}
+
+// ApplyGoodsByIds 创建申请记录
+func (busGoodsService *BusGoodsService) ApplyGoodsByIds(busApplyInfo businessReq.BusApplyInfo, c *gin.Context) (err error) {
+	applicantID := utils.GetUserID(c) // 获取申请者ID
+	length := len(busApplyInfo.Ids)
+	GoodsSlice := make([]business.BusGoods, length)
+	for i := 0; i < length; i++ {
+		good := business.BusGoods{
+			ID: uint(busApplyInfo.Ids[i].ID),
+		}
+		GoodsSlice[i] = good
+	}
+	order := business.BusOrder{
+		Goods:       GoodsSlice,
+		ApplicantID: applicantID,
+		State:       global.Processing,
+	}
+	// many2many的自定义连接表也可以完全手动写入，目前是采用GORM写入两个主键并手动写入number和batch
+	rst := global.GVA_DB.Create(&order) // 这里只写入了连接表的两个外键，还有number和batch需要手动写入
+	if rst.Error != nil {
+		return rst.Error
+	}
+	for i := 0; i < length; i++ {
+		busOrderInfo := business.BusOrderGoods{
+			BusOrderID: order.ID,
+			BusGoodsID: busApplyInfo.Ids[i].ID,
+			Number:     busApplyInfo.Ids[i].Number,
+		}
+		rst = global.GVA_DB.Save(&busOrderInfo)
+		if rst.Error != nil {
+			return rst.Error
+		}
+	}
+
+	return err
 }

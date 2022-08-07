@@ -3,16 +3,18 @@ package business
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
+	"gorm.io/gorm"
+	"time"
 )
 
 // BusOrder 结构体
 type BusOrder struct {
 	global.GVA_MODEL
-	ApplicantID int
+	ApplicantID uint
 	Applicant   system.SysUser `gorm:"foreignKey:ApplicantID"`
-	ApproverID  int
+	ApproverID  uint
 	Approver    system.SysUser `gorm:"foreignKey:ApproverID"`
-	State       int            `json:"state" form:"state"`
+	State       uint           `json:"state" form:"state"`
 	Goods       []BusGoods     `gorm:"many2many:bus_order_goods;"`
 }
 
@@ -22,9 +24,9 @@ func (BusOrder) TableName() string {
 }
 
 type BusOrderGoods struct {
-	BusOrderID int    `gorm:"primaryKey"`
-	BusGoodsID int    `gorm:"primaryKey"`
-	Number     int    `json:"number" form:"number" `
+	BusOrderID uint   `gorm:"primaryKey"`
+	BusGoodsID uint   `gorm:"primaryKey"`
+	Number     uint   `json:"number" form:"number" `
 	Batch      string `json:"batch" form:"batch" `
 }
 
@@ -35,11 +37,14 @@ func (BusOrderGoods) TableName() string {
 
 // BusGoods 结构体
 type BusGoods struct {
-	global.GVA_MODEL
-	Name          string `json:"name" form:"name" `
-	Price         int    `json:"price" form:"price" `
-	Factory       string `json:"factory" form:"factory" `
-	Specification string `json:"specification" form:"specification" `
+	ID            uint           `gorm:"primarykey"` // 主键ID
+	CreatedAt     time.Time      // 创建时间
+	UpdatedAt     time.Time      // 更新时间
+	DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"` // 删除时间
+	Name          string         `json:"name" form:"name" `
+	Price         int            `json:"price" form:"price" `
+	Factory       string         `json:"factory" form:"factory" `
+	Specification string         `json:"specification" form:"specification" `
 	GroupID       *int
 	Group         BusGroup `gorm:"foreignKey:GroupID"`
 	ProviderID    *int
