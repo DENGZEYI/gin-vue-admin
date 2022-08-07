@@ -9,19 +9,6 @@
       </el-form>
     </div>
     <div class="gva-table-box">
-        <div class="gva-btn-list">
-            <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
-            <el-popover v-model:visible="deleteVisible" placement="top" width="160">
-            <p>确定要删除吗？</p>
-            <div style="text-align: right; margin-top: 8px;">
-                <el-button size="small" type="primary" link @click="deleteVisible = false">取消</el-button>
-                <el-button size="small" type="primary" @click="onDelete">确定</el-button>
-            </div>
-            <template #reference>
-                <el-button icon="delete" size="small" style="margin-left: 10px;" :disabled="!multipleSelection.length" @click="deleteVisible = true">删除</el-button>
-            </template>
-            </el-popover>
-        </div>
         <el-table
         ref="multipleTable"
         style="width: 100%"
@@ -31,17 +18,21 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="日期" width="180">
+        <el-table-column align="left" label="申请表表单号" prop="ID" width="120" />
+        <el-table-column align="left" label="申请提交日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="applicantId字段" prop="applicantId" width="120" />
-        <el-table-column align="left" label="approverId字段" prop="approverId" width="120" />
+        <el-table-column align="left" label="申请人" prop="Applicant.nickName" width="120" />
+        <el-table-column align="left" label="申请审批日期" width="180">
+            <template #default="scope">{{ formatDate(scope.row.UpdatedAt) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="审批人" prop="Approver.nickName" width="120" />
         <el-table-column align="left" label="申请状态" prop="state" width="120" >
           <template #default="scope">{{ filterDict(scope.row.state,applyStateOptions) }}</template>
         </el-table-column>
         <el-table-column align="left" label="按钮组">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" size="small" class="table-button" @click="updateBusOrderFunc(scope.row)">变更</el-button>
+            <el-button type="primary" link icon="edit" size="small" class="table-button" @click="updateBusOrderFunc(scope.row)">审批</el-button>
             <el-button type="primary" link icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -58,14 +49,23 @@
             />
         </div>
     </div>
-    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
+    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="申请表详情">
+      <!-- 审批单详情 -->
+      <div class="gva-table-box">
+        <el-table
+        ref="multipleTable"
+        style="width: 100%"
+        tooltip-effect="dark"
+        :data="orderTableData"
+        row-key="ID"
+        @selection-change="handleSelectionChange"
+        >
+        <el-table-column align="left" label="耗材名称" prop="name" width="120" />
+        <el-table-column align="left" label="耗材数量" prop="number" width="120" />
+        </el-table>
+      </div>
+      <!-- 审批状态 -->
       <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
-        <el-form-item label="applicantId字段:"  prop="applicantId" >
-          <el-input v-model.number="formData.applicantId" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="approverId字段:"  prop="approverId" >
-          <el-input v-model.number="formData.approverId" :clearable="true" placeholder="请输入" />
-        </el-form-item>
         <el-form-item label="申请状态:"  prop="state" >
           <el-select v-model="formData.state" placeholder="请选择" :clearable="true">
             <el-option v-for="(item,key) in applyStateOptions" :key="key" :label="item.label" :value="item.value" />
@@ -95,6 +95,7 @@ import {
   deleteBusOrderByIds,
   updateBusOrder,
   findBusOrder,
+  findBusOrderDetails,
   getBusOrderList
 } from '@/api/busOrder'
 
@@ -105,8 +106,7 @@ import { ref, reactive } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
-        applicantId: 0,
-        approverId: 0,
+        ID:0,
         state: 0,
         })
 
@@ -122,6 +122,7 @@ const page = ref(1)
 const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
+const orderTableData = ref([]) //存储申请详情
 const searchInfo = ref({})
 
 // 重置
@@ -227,12 +228,18 @@ const type = ref('')
 
 // 更新行
 const updateBusOrderFunc = async(row) => {
+    // 获取申请单详情
+    const resDetails = await findBusOrderDetails({ID:row.ID})
+    if (resDetails.code === 0) {
+        orderTableData.value = resDetails.data.rebusOrderDetails
+    }
     const res = await findBusOrder({ ID: row.ID })
     type.value = 'update'
     if (res.code === 0) {
         formData.value = res.data.rebusOrder
         dialogFormVisible.value = true
     }
+    
 }
 
 
@@ -264,8 +271,7 @@ const openDialog = () => {
 const closeDialog = () => {
     dialogFormVisible.value = false
     formData.value = {
-        applicantId: 0,
-        approverId: 0,
+        ID:0,
         state: 0,
         }
 }

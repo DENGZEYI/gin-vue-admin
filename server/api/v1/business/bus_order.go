@@ -88,7 +88,7 @@ func (busOrderApi *BusOrderApi) DeleteBusOrderByIds(c *gin.Context) {
 func (busOrderApi *BusOrderApi) UpdateBusOrder(c *gin.Context) {
 	var busOrder business.BusOrder
 	_ = c.ShouldBindJSON(&busOrder)
-	if err := busOrderService.UpdateBusOrder(busOrder); err != nil {
+	if err := busOrderService.UpdateBusOrder(busOrder, c); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -113,6 +113,17 @@ func (busOrderApi *BusOrderApi) FindBusOrder(c *gin.Context) {
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"rebusOrder": rebusOrder}, c)
+	}
+}
+
+func (busOrderApi *BusOrderApi) FindBusOrderDetails(c *gin.Context) {
+	var busOrder business.BusOrder
+	_ = c.ShouldBindQuery(&busOrder)
+	if rebusOrderDetails, err := busOrderService.GetBusOrderDetails(busOrder.ID); err != nil {
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+	} else {
+		response.OkWithData(gin.H{"rebusOrderDetails": rebusOrderDetails}, c)
 	}
 }
 

@@ -48,7 +48,8 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="日期" width="180">
+        <el-table-column align="left" label="ID" prop="ID" width="120" />
+        <el-table-column align="left" label="创建日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column align="left" label="名称" prop="name" width="120" />
@@ -88,13 +89,13 @@
       <!-- 表格按钮 -->
       <div class="gva-btn-list">
             <el-popover v-model:visible="selectedDataSubVisible" placement="top" width="160">
-            <p>确定要提交吗？</p>
+            <p>确定要提交申请吗？</p>
             <div style="text-align: right; margin-top: 8px;">
                 <el-button size="small" type="primary" link @click="selectedDataSubVisible = false">取消</el-button>
                 <el-button size="small" type="primary" @click="onSubmitSelectedData">确定</el-button>
             </div>
             <template #reference>
-                <el-button icon="checked" size="small" style="margin-left: 10px;" :disabled="!selectedData.length" @click="selectedDataSubVisible = true">提交</el-button>
+                <el-button icon="checked" size="small" style="margin-left: 10px;" :disabled="!selectedData.length" @click="selectedDataSubVisible = true">提交申请</el-button>
             </template>
             </el-popover>
         </div>
@@ -108,7 +109,7 @@
         <el-table-column align="left" label="名称" prop="name" width="120" />
         <el-table-column align="left" label="数量" prop="number" width="120" >
           <template #default="scope">
-            <input type="text" v-model="scope.row.number" v-show="scope.row.iseditor" />
+            <input type="number" v-model="scope.row.number" v-show="scope.row.iseditor" />
             <span v-show="!scope.row.iseditor">{{scope.row.number}}</span>
           </template>
         </el-table-column>

@@ -5,6 +5,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business"
 	businessReq "github.com/flipped-aurora/gin-vue-admin/server/model/business/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/gin-gonic/gin"
 )
 
 type BusOrderService struct {
@@ -33,7 +35,8 @@ func (busOrderService *BusOrderService) DeleteBusOrderByIds(ids request.IdsReq) 
 
 // UpdateBusOrder 更新BusOrder记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (busOrderService *BusOrderService) UpdateBusOrder(busOrder business.BusOrder) (err error) {
+func (busOrderService *BusOrderService) UpdateBusOrder(busOrder business.BusOrder, c *gin.Context) (err error) {
+	busOrder.ApproverID = utils.GetUserID(c) // 获取审批者者ID
 	err = global.GVA_DB.Save(&busOrder).Error
 	return err
 }
@@ -43,6 +46,17 @@ func (busOrderService *BusOrderService) UpdateBusOrder(busOrder business.BusOrde
 func (busOrderService *BusOrderService) GetBusOrder(id uint) (busOrder business.BusOrder, err error) {
 	err = global.GVA_DB.Where("id = ?", id).First(&busOrder).Error
 	return
+}
+
+// GetBusOrderDetails 根据id获取申请的详情
+// Author [piexlmax](https://github.com/piexlmax)
+func (busOrderService *BusOrderService) GetBusOrderDetails(id uint) (results []businessReq.BusOrderDetailsRst, err error) {
+	// 创建db
+	db := global.GVA_DB.Model(&business.BusOrderGoods{})
+	var busOrderGoods []business.BusOrderGoods
+	db = db.Where("bus_order_id = ?", id).Find(&busOrderGoods)
+	db.Select("bus_order_goods.number,bus_goods.name").Joins("left join bus_goods on bus_goods.ID = bus_order_goods.bus_goods_id").Scan(&results)
+	return results, err
 }
 
 // GetBusOrderInfoList 分页获取BusOrder记录
@@ -58,7 +72,7 @@ func (busOrderService *BusOrderService) GetBusOrderInfoList(info businessReq.Bus
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&busOrders).Error
+	err = db.Limit(limit).Offset(offset).Preload("Applicant").Preload("Approver").Find(&busOrders).Error
 	return busOrders, total, err
 }
 

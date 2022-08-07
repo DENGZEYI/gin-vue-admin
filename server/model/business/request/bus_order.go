@@ -9,3 +9,8 @@ type BusOrderSearch struct {
 	business.BusOrder
 	request.PageInfo
 }
+
+type BusOrderDetailsRst struct {
+	Name   string `json:"name" form:"name" `
+	Number int    `json:"number" form:"number" `
+}

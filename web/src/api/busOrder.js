@@ -80,6 +80,14 @@ export const findBusOrder = (params) => {
   })
 }
 
+export const findBusOrderDetails = (params) =>{
+  return service({
+    url: '/busOrder/findBusOrderDetails',
+    method: 'get',
+    params
+  })
+}
+
 // @Tags BusOrder
 // @Summary 分页获取BusOrder列表
 // @Security ApiKeyAuth
