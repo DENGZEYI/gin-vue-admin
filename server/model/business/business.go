@@ -15,7 +15,7 @@ type BusOrder struct {
 	ApproverID  uint
 	Approver    system.SysUser `gorm:"foreignKey:ApproverID"`
 	State       uint           `json:"state" form:"state"`
-	Goods       []BusGoods     `gorm:"many2many:bus_order_goods;"`
+	Goods       []BusGoods     `gorm:"foreignKey:BusOrderID"`
 }
 
 // TableName BusOrder 表名
@@ -23,20 +23,9 @@ func (BusOrder) TableName() string {
 	return "bus_order"
 }
 
-type BusOrderGoods struct {
-	BusOrderID uint   `gorm:"primaryKey"`
-	BusGoodsID uint   `gorm:"primaryKey"`
-	Number     uint   `json:"number" form:"number" `
-	Batch      string `json:"batch" form:"batch" `
-}
-
-// TableName BusOrderGoods 表名
-func (BusOrderGoods) TableName() string {
-	return "bus_order_goods"
-}
-
-// BusGoods 结构体
-type BusGoods struct {
+// BusGoodsDict 结构体
+// 记录了耗材的基本信息
+type BusGoodsDict struct {
 	ID            uint           `gorm:"primarykey"` // 主键ID
 	CreatedAt     time.Time      // 创建时间
 	UpdatedAt     time.Time      // 更新时间
@@ -45,10 +34,29 @@ type BusGoods struct {
 	Price         int            `json:"price" form:"price" `
 	Factory       string         `json:"factory" form:"factory" `
 	Specification string         `json:"specification" form:"specification" `
-	GroupID       *int
+	GroupID       *uint
 	Group         BusGroup `gorm:"foreignKey:GroupID"`
-	ProviderID    *int
+	ProviderID    *uint
 	Provider      BusProvider `gorm:"foreignKey:ProviderID"`
+}
+
+// TableName BusGoods 表名
+func (BusGoodsDict) TableName() string {
+	return "bus_goods_dict"
+}
+
+// BusGoods 结构体
+type BusGoods struct {
+	ID        uint           `gorm:"primarykey"` // 主键ID
+	CreatedAt time.Time      // 创建时间
+	UpdatedAt time.Time      // 更新时间
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"` // 删除时间
+
+	BusOrderID   uint
+	GoodsDict    BusGoodsDict `gorm:"foreignKey:GoodsDictID"`
+	GoodsDictID  *uint        `json:"GoodsDictID" form:"GoodsDictID" `
+	SerialNumber uint         `json:"serial_number" form:"serial_number" `
+	Batch        string       `json:"batch" form:"batch" `
 }
 
 // TableName BusGoods 表名

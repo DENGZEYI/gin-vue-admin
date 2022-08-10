@@ -21,8 +21,7 @@ func (s *BusOrderRouter) InitBusOrderRouter(Router *gin.RouterGroup) {
 		busOrderRouter.PUT("updateBusOrder", busOrderApi.UpdateBusOrder)              // 更新BusOrder
 	}
 	{
-		busOrderRouterWithoutRecord.GET("findBusOrder", busOrderApi.FindBusOrder) // 根据ID获取BusOrder
-		busOrderRouterWithoutRecord.GET("findBusOrderDetails", busOrderApi.FindBusOrderDetails)
+		busOrderRouterWithoutRecord.GET("findBusOrder", busOrderApi.FindBusOrder)       // 根据ID获取BusOrder
 		busOrderRouterWithoutRecord.GET("getBusOrderList", busOrderApi.GetBusOrderList) // 获取BusOrder列表
 	}
 }

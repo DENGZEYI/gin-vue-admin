@@ -65,7 +65,7 @@
         </el-table-column>
         <el-table-column align="left" label="按钮组">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" size="small" class="table-button" @click="updateBusGoodsFunc(scope.row)">变更</el-button>
+            <el-button type="primary" link icon="edit" size="small" class="table-button" @click="updatebusGoodsDictFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
             <el-button type="primary" link icon="DocumentAdd" size="small" @click="addRow(scope.row)">添加</el-button>
             </template>
@@ -161,20 +161,20 @@
 
 <script>
 export default {
-  name: 'BusGoods'
+  name: 'busGoodsDict'
 }
 </script>
 
 <script setup>
 import {
-  createBusGoods,
-  deleteBusGoods,
-  deleteBusGoodsByIds,
-  updateBusGoods,
-  findBusGoods,
-  getBusGoodsList,
-  applyGoodsByIds
-} from '@/api/busGoods'
+  createBusGoodsDict,
+  deleteBusGoodsDict,
+  deleteBusGoodsDictByIds,
+  updateBusGoodsDict,
+  findBusGoodsDict,
+  getBusGoodsDictList,
+  applyBusGoodsByIds
+} from '@/api/busGoodsDict'
 
 // 全量引入格式化工具 请按需保留
 import { formatDate,getBusDictFunc, formatBoolean, filterDict } from '@/utils/format'
@@ -238,7 +238,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getBusGoodsList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getBusGoodsDictList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -276,7 +276,7 @@ const deleteRow = (row) => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-            deleteBusGoodsFunc(row)
+            deleteBusGoodsDictFunc(row)
         })
     }
 
@@ -310,7 +310,7 @@ const onSubmitSelectedData = async() =>{
   selectedData.value &&selectedData.value.map(item => {
           ids.push({ID:item.ID,number:item.number})
         })
-  const res= await applyGoodsByIds({ids})
+  const res= await applyBusGoodsByIds({ids})
   if (res.code === 0) {
         ElMessage({
           type: 'success',
@@ -337,7 +337,7 @@ const onDelete = async() => {
         multipleSelection.value.map(item => {
           ids.push(item.ID)
         })
-      const res = await deleteBusGoodsByIds({ ids })
+      const res = await deleteBusGoodsDictByIds({ ids })
       if (res.code === 0) {
         ElMessage({
           type: 'success',
@@ -355,19 +355,19 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updateBusGoodsFunc = async(row) => {
-    const res = await findBusGoods({ ID: row.ID })
+const updatebusGoodsDictFunc = async(row) => {
+    const res = await findBusGoodsDict({ ID: row.ID })
     type.value = 'update'
     if (res.code === 0) {
-        formData.value = res.data.rebusGoods
+        formData.value = res.data.rebusGoodsDict
         dialogFormVisible.value = true
     }
 }
 
 
 // 删除行
-const deleteBusGoodsFunc = async (row) => {
-    const res = await deleteBusGoods({ ID: row.ID })
+const deleteBusGoodsDictFunc = async (row) => {
+    const res = await deleteBusGoodsDict({ ID: row.ID })
     if (res.code === 0) {
         ElMessage({
                 type: 'success',
@@ -408,13 +408,13 @@ const enterDialog = async () => {
               let res
               switch (type.value) {
                 case 'create':
-                  res = await createBusGoods(formData.value)
+                  res = await createBusGoodsDict(formData.value)
                   break
                 case 'update':
-                  res = await updateBusGoods(formData.value)
+                  res = await updateBusGoodsDict(formData.value)
                   break
                 default:
-                  res = await createBusGoods(formData.value)
+                  res = await createBusGoodsDict(formData.value)
                   break
               }
               if (res.code === 0) {

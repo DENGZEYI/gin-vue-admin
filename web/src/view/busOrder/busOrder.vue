@@ -15,10 +15,17 @@
         tooltip-effect="dark"
         :data="tableData"
         row-key="ID"
-        @selection-change="handleSelectionChange"
         >
-        <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="申请表表单号" prop="ID" width="120" />
+          <el-table-column label="详情" type="expand" width="120" >
+            <template #default="props">
+                <h3>采购申请单详情</h3>
+                <el-table :data="props.row.family">
+                  <el-table-column label="耗材名称" prop="name" />
+                  <el-table-column label="申请数量" prop="state" />
+                </el-table>
+              </template>
+            </el-table-column>
+        <el-table-column align="left" label="申请表ID" prop="ID" width="120" />
         <el-table-column align="left" label="申请提交日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>

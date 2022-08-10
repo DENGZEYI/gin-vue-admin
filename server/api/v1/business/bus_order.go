@@ -116,17 +116,6 @@ func (busOrderApi *BusOrderApi) FindBusOrder(c *gin.Context) {
 	}
 }
 
-func (busOrderApi *BusOrderApi) FindBusOrderDetails(c *gin.Context) {
-	var busOrder business.BusOrder
-	_ = c.ShouldBindQuery(&busOrder)
-	if rebusOrderDetails, err := busOrderService.GetBusOrderDetails(busOrder.ID); err != nil {
-		global.GVA_LOG.Error("查询失败!", zap.Error(err))
-		response.FailWithMessage("查询失败", c)
-	} else {
-		response.OkWithData(gin.H{"rebusOrderDetails": rebusOrderDetails}, c)
-	}
-}
-
 // GetBusOrderList 分页获取BusOrder列表
 // @Tags BusOrder
 // @Summary 分页获取BusOrder列表

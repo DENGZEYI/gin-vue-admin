@@ -5,14 +5,14 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 )
 
-type BusGoodsSearch struct {
-	business.BusGoods
+type BusGoodsDictSearch struct {
+	business.BusGoodsDict
 	request.PageInfo
 }
 
 type BusApplyGoodsByID struct {
-	ID     uint `json:"ID" form:"ID"`
-	Number uint `json:"number" form:"number"`
+	ID     *uint `json:"ID" form:"ID"`
+	Number int   `json:"number" form:"number"`
 }
 
 type BusApplyInfo struct {
