@@ -34,9 +34,8 @@
         </el-table-column>
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
-            <el-button type="primary" link icon="edit" size="small" class="table-button"
-              @click="updateBusOrderFunc(scope.row)">审批</el-button>
-            <el-button type="primary" link icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
+            <el-button type="primary" link icon="edit" size="small" @click="updateBusOrderFunc(scope.row)">审批
+            </el-button>
           </template>
         </el-table-column>
       </el-table>

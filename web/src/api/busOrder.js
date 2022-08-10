@@ -32,6 +32,14 @@ export const deleteBusOrder = (data) => {
   })
 }
 
+export const getOrderDetails = (params)=>{
+  return service({
+    url: '/busOrder/getOrderDetails',
+    method: 'get',
+    params
+  })
+}
+
 // @Tags BusOrder
 // @Summary 删除BusOrder
 // @Security ApiKeyAuth

@@ -34,7 +34,7 @@
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="name字段" prop="name" width="120" />
+        <el-table-column align="left" label="名称" prop="name" width="120" />
         <el-table-column align="left" label="按钮组">
             <template #default="scope">
             <el-button type="primary" link icon="edit" size="small" class="table-button" @click="updateBusGroupFunc(scope.row)">变更</el-button>
