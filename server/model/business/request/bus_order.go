@@ -11,6 +11,7 @@ type BusOrderSearch struct {
 }
 
 type BusOrderDetailsRst struct {
-	Name   string `json:"name" form:"name" `
-	Number int    `json:"number" form:"number" `
+	GoodsDict     business.BusGoodsDict `json:"GoodsDict" form:"GoodsDict" gorm:"foreignKey:Goods_dict_id"`
+	Goods_dict_id int                   `json:"goods_dict_id" form:"goods_dict_id"`
+	Number        int                   `json:"number" form:"number"`
 }

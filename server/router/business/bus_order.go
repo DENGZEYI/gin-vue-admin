@@ -23,5 +23,6 @@ func (s *BusOrderRouter) InitBusOrderRouter(Router *gin.RouterGroup) {
 	{
 		busOrderRouterWithoutRecord.GET("findBusOrder", busOrderApi.FindBusOrder)       // 根据ID获取BusOrder
 		busOrderRouterWithoutRecord.GET("getBusOrderList", busOrderApi.GetBusOrderList) // 获取BusOrder列表
+		busOrderRouterWithoutRecord.GET("getOrderDetails", busOrderApi.GetOrderDetails)
 	}
 }

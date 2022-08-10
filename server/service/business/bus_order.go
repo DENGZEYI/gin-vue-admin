@@ -48,6 +48,14 @@ func (busOrderService *BusOrderService) GetBusOrder(id uint) (busOrder business.
 	return
 }
 
+// GetBusOrderDetails 根据id获取GetBusOrderDetails
+// Author [piexlmax](https://github.com/piexlmax)
+func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (rsts []businessReq.BusOrderDetailsRst, err error) {
+	db := global.GVA_DB.Model(&business.BusGoods{})
+	err = db.Preload("GoodsDict").Select("goods_dict_id,count(goods_dict_id) as number").Where("bus_order_id =?", orderID).Group("goods_dict_id").Find(&rsts).Error
+	return rsts, err
+}
+
 // GetBusOrderInfoList 分页获取BusOrder记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (busOrderService *BusOrderService) GetBusOrderInfoList(info businessReq.BusOrderSearch) (list []business.BusOrder, total int64, err error) {
@@ -61,8 +69,7 @@ func (busOrderService *BusOrderService) GetBusOrderInfoList(info businessReq.Bus
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Preload("Applicant").Preload("Approver").Preload("Goods.GoodsDict").Find(&busOrders).Error
-	// 查找数量
+	err = db.Limit(limit).Offset(offset).Preload("Applicant").Preload("Approver").Find(&busOrders).Error
 	return busOrders, total, err
 }
 
