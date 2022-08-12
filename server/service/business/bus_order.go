@@ -50,10 +50,10 @@ func (busOrderService *BusOrderService) GetBusOrder(id uint) (busOrder business.
 
 // GetBusOrderDetails 根据id获取GetBusOrderDetails
 // Author [piexlmax](https://github.com/piexlmax)
-func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (rsts []businessReq.BusOrderDetailsRst, err error) {
-	db := global.GVA_DB.Model(&business.BusGoods{})
-	err = db.Preload("GoodsDict").Select("goods_dict_id,count(goods_dict_id) as number").Where("bus_order_id =?", orderID).Group("goods_dict_id").Find(&rsts).Error
-	return rsts, err
+func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (busOrder business.BusOrder, err error) {
+	db := global.GVA_DB.Model(&business.BusOrder{})
+	err = db.Where("id = ?", orderID).Preload("BusOrderDetails.GoodsDict").First(&busOrder).Error
+	return busOrder, err
 }
 
 // GetBusOrderInfoList 分页获取BusOrder记录

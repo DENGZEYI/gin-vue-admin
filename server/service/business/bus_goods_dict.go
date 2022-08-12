@@ -78,19 +78,18 @@ func (BusGoodsDictService *BusGoodsDictService) GetBusGoodsDictInfoList(info bus
 func (BusGoodsDictService *BusGoodsDictService) ApplyGoodsByIds(busApplyInfo businessReq.BusApplyInfo, c *gin.Context) (err error) {
 	applicantID := utils.GetUserID(c) // 获取申请者ID
 	length := len(busApplyInfo.Ids)
-	var GoodsSlice []business.BusGoods
+	var orderDetails []business.BusOrderDetails
 	for i := 0; i < length; i++ {
-		for j := 0; j < busApplyInfo.Ids[i].Number; j++ {
-			good := business.BusGoods{
-				GoodsDictID: busApplyInfo.Ids[i].ID,
-			}
-			GoodsSlice = append(GoodsSlice, good)
+		goodDetails := business.BusOrderDetails{
+			GoodsDictID: busApplyInfo.Ids[i].ID,
+			Number:      busApplyInfo.Ids[i].Number,
 		}
+		orderDetails = append(orderDetails, goodDetails)
 	}
 	order := business.BusOrder{
-		Goods:       GoodsSlice,
-		ApplicantID: applicantID,
-		State:       global.Processing,
+		BusOrderDetails: orderDetails,
+		ApplicantID:     applicantID,
+		State:           global.Processing,
 	}
 	err = global.GVA_DB.Create(&order).Error
 	return err

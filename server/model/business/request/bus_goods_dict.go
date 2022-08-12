@@ -12,7 +12,7 @@ type BusGoodsDictSearch struct {
 
 type BusApplyGoodsByID struct {
 	ID     *uint `json:"ID" form:"ID"`
-	Number int   `json:"number" form:"number"`
+	Number uint  `json:"number" form:"number"`
 }
 
 type BusApplyInfo struct {

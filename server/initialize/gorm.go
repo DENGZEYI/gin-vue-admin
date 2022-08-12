@@ -56,6 +56,7 @@ func RegisterTables(db *gorm.DB) {
 		business.BusProvider{},
 		business.BusGoodsDict{},
 		business.BusGoods{},
+		business.BusOrderDetails{},
 		business.BusOrder{},
 
 		// 自动化模块表
