@@ -82,7 +82,7 @@ export const updateBusGoodsDict = (data) => {
 // @Router /busGoodsDict/findbusGoodsDict [get]
 export const findBusGoodsDict = (params) => {
   return service({
-    url: '/busGoodsDict/findbusGoodsDict',
+    url: '/busGoodsDict/findBusGoodsDict',
     method: 'get',
     params
   })

@@ -15,7 +15,7 @@
           <template #default="props">
             <h3>采购申请单详情</h3>
             <el-table :data="props.row.details">
-              <el-table-column label="耗材名称" prop="GoodsDict.name" width="120" />
+              <el-table-column label="耗材名称" prop="goods_dict.name" width="120" />
               <el-table-column label="申请数量" prop="number" width="120" />
             </el-table>
           </template>

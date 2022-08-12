@@ -347,7 +347,7 @@ const updatebusGoodsDictFunc = async (row) => {
   const res = await findBusGoodsDict({ ID: row.ID })
   type.value = 'update'
   if (res.code === 0) {
-    formData.value = res.data.rebusGoodsDict
+    formData.value = res.data.reBusGoodsDict
     dialogFormVisible.value = true
   }
 }

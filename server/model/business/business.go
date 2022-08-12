@@ -10,7 +10,7 @@ import (
 type BusOrderDetails struct {
 	global.GVA_MODEL
 	BusOrderID  *uint
-	GoodsDict   BusGoodsDict `gorm:"foreignKey:GoodsDictID"`
+	GoodsDict   BusGoodsDict `gorm:"foreignKey:GoodsDictID" json:"goods_dict" form:"goods_dict"`
 	GoodsDictID *uint        `json:"goods_dict_id" form:"goods_dict_id" `
 	Number      uint         `json:"number" form:"number" `
 }

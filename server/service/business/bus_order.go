@@ -82,19 +82,11 @@ func (busOrderService *BusOrderService) GetBusStateDict() (list []global.ApplySt
 	})
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Pass,
-		Name: "通过",
-	})
-	applyStateDict = append(applyStateDict, global.ApplyState{
-		ID:   global.Ingress,
-		Name: "已入库",
-	})
-	applyStateDict = append(applyStateDict, global.ApplyState{
-		ID:   global.Egress,
-		Name: "已出库",
+		Name: "申请通过",
 	})
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Fail,
-		Name: "不通过",
+		Name: "申请不通过",
 	})
 	return applyStateDict, nil
 }
