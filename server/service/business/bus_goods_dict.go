@@ -78,9 +78,9 @@ func (BusGoodsDictService *BusGoodsDictService) GetBusGoodsDictInfoList(info bus
 func (BusGoodsDictService *BusGoodsDictService) ApplyGoodsByIds(busApplyInfo businessReq.BusApplyInfo, c *gin.Context) (err error) {
 	applicantID := utils.GetUserID(c) // 获取申请者ID
 	length := len(busApplyInfo.Ids)
-	var orderDetails []business.BusOrderDetails
+	var orderDetails []business.BusOrderDetail
 	for i := 0; i < length; i++ {
-		goodDetails := business.BusOrderDetails{
+		goodDetails := business.BusOrderDetail{
 			GoodsDictID: busApplyInfo.Ids[i].ID,
 			Number:      busApplyInfo.Ids[i].Number,
 		}
