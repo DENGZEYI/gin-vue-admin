@@ -34,7 +34,9 @@
         </el-table-column>
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
-            <el-button type="primary" link icon="edit" size="small" @click="updateBusOrderFunc(scope.row)">审批
+            <el-button type="primary" link icon="edit" size="small" @click="approveBusOrderFunc(scope.row)">审批
+            </el-button>
+            <el-button type="primary" link icon="edit" size="small" @click="ingressBusOrderFunc(scope.row)">入库
             </el-button>
           </template>
         </el-table-column>
@@ -45,19 +47,19 @@
           @size-change="handleSizeChange" />
       </div>
     </div>
-    <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="申请表详情">
-      <!-- 审批状态 -->
-      <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
+    <!-- 审批状态 -->
+    <el-dialog v-model="approveDialogFormVisible" :before-close="approveCloseDialog" title="申请表详情">
+      <el-form :model="approveFormData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
         <el-form-item label="申请状态:" prop="state">
-          <el-select v-model="formData.state" placeholder="请选择" :clearable="true">
+          <el-select v-model="approveFormData.state" placeholder="请选择" :clearable="true">
             <el-option v-for="(item, key) in applyStateOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button size="small" @click="closeDialog">取 消</el-button>
-          <el-button size="small" type="primary" @click="enterDialog">确 定</el-button>
+          <el-button size="small" @click="approveCloseDialog">取 消</el-button>
+          <el-button size="small" type="primary" @click="approveEnterDialog">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -87,7 +89,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
-const formData = ref({
+const approveFormData = ref({
   ID: 0,
   state: 0,
 })
@@ -160,125 +162,41 @@ const expandChange = async (row) => {
   }
 }
 
-
-// 多选数据
-const multipleSelection = ref([])
-// 多选
-const handleSelectionChange = (val) => {
-  multipleSelection.value = val
-}
-
-// 删除行
-const deleteRow = (row) => {
-  ElMessageBox.confirm('确定要删除吗?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    deleteBusOrderFunc(row)
-  })
-}
-
-
-// 批量删除控制标记
-const deleteVisible = ref(false)
-
-// 多选删除
-const onDelete = async () => {
-  const ids = []
-  if (multipleSelection.value.length === 0) {
-    ElMessage({
-      type: 'warning',
-      message: '请选择要删除的数据'
-    })
-    return
-  }
-  multipleSelection.value &&
-    multipleSelection.value.map(item => {
-      ids.push(item.ID)
-    })
-  const res = await deleteBusOrderByIds({ ids })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-    if (tableData.value.length === ids.length && page.value > 1) {
-      page.value--
-    }
-    deleteVisible.value = false
-    getTableData()
-  }
-}
-
-// 行为控制标记（弹窗内部需要增还是改）
-const type = ref('')
-
 // 更新行
-const updateBusOrderFunc = async (row) => {
+// 更新审批状态
+const approveBusOrderFunc = async (row) => {
   const res = await findBusOrder({ ID: row.ID })
-  type.value = 'update'
   if (res.code === 0) {
-    formData.value = res.data.rebusOrder
-    dialogFormVisible.value = true
+    approveFormData.value = res.data.rebusOrder
+    approveDialogFormVisible.value = true
   }
 }
 
-
-// 删除行
-const deleteBusOrderFunc = async (row) => {
-  const res = await deleteBusOrder({ ID: row.ID })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-    if (tableData.value.length === 1 && page.value > 1) {
-      page.value--
-    }
-    getTableData()
-  }
-}
 
 // 弹窗控制标记
-const dialogFormVisible = ref(false)
-
-// 打开弹窗
-const openDialog = () => {
-  type.value = 'create'
-  dialogFormVisible.value = true
-}
+const approveDialogFormVisible = ref(false)
 
 // 关闭弹窗
-const closeDialog = () => {
-  dialogFormVisible.value = false
-  formData.value = {
+const approveCloseDialog = () => {
+  approveDialogFormVisible.value = false
+  approveFormData.value = {
     ID: 0,
     state: 0,
   }
 }
+
 // 弹窗确定
-const enterDialog = async () => {
+const approveEnterDialog = async () => {
   elFormRef.value?.validate(async (valid) => {
     if (!valid) return
     let res
-    switch (type.value) {
-      case 'create':
-        res = await createBusOrder(formData.value)
-        break
-      case 'update':
-        res = await updateBusOrder(formData.value)
-        break
-      default:
-        res = await createBusOrder(formData.value)
-        break
-    }
+    res = await updateBusOrder(approveFormData.value)
     if (res.code === 0) {
       ElMessage({
         type: 'success',
         message: '创建/更改成功'
       })
-      closeDialog()
+      approveCloseDialog()
       getTableData()
     }
   })
