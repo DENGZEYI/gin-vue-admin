@@ -96,6 +96,30 @@ func (busOrderApi *BusOrderApi) UpdateBusOrder(c *gin.Context) {
 	}
 }
 
+// ApproveBusOrder 审批
+func (busOrderApi *BusOrderApi) ApproveBusOrder(c *gin.Context) {
+	var busOrder business.BusOrder
+	_ = c.ShouldBindJSON(&busOrder)
+	if err := busOrderService.UpdateBusOrder(busOrder, c); err != nil {
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+	} else {
+		response.OkWithMessage("更新成功", c)
+	}
+}
+
+// IngressBusOrder 入库
+func (busOrderApi *BusOrderApi) IngressBusOrder(c *gin.Context) {
+	var busIngressReq businessReq.BusIngressReq
+	_ = c.ShouldBindJSON(&busIngressReq)
+	if err := busOrderService.IngressBusOrder(busIngressReq, c); err != nil {
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+	} else {
+		response.OkWithMessage("更新成功", c)
+	}
+}
+
 // FindBusOrder 用id查询BusOrder
 // @Tags BusOrder
 // @Summary 用id查询BusOrder
@@ -113,6 +137,18 @@ func (busOrderApi *BusOrderApi) FindBusOrder(c *gin.Context) {
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"rebusOrder": rebusOrder}, c)
+	}
+}
+
+// GetOrderDetail 根据dict_id和bus_order_id获取BusOrderDetail
+func (busOrderApi *BusOrderApi) GetOrderDetail(c *gin.Context) {
+	var orderDetail business.BusOrderDetail
+	_ = c.ShouldBindQuery(&orderDetail)
+	if err := busOrderService.GetBusOrderDetail(&orderDetail); err != nil {
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+	} else {
+		response.OkWithData(gin.H{"reOrderDetail": orderDetail}, c)
 	}
 }
 

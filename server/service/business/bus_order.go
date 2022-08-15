@@ -3,6 +3,7 @@ package business
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business"
+	businessRe "github.com/flipped-aurora/gin-vue-admin/server/model/business/reply"
 	businessReq "github.com/flipped-aurora/gin-vue-admin/server/model/business/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
@@ -36,8 +37,46 @@ func (busOrderService *BusOrderService) DeleteBusOrderByIds(ids request.IdsReq) 
 // UpdateBusOrder 更新BusOrder记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (busOrderService *BusOrderService) UpdateBusOrder(busOrder business.BusOrder, c *gin.Context) (err error) {
-	busOrder.ApproverID = utils.GetUserID(c) // 获取审批者者ID
+	userID := utils.GetUserID(c) // 获取审批者ID
+	busOrder.ApproverID = &userID
 	err = global.GVA_DB.Save(&busOrder).Error
+	return err
+}
+
+// IngressBusOrder 入库
+// Author [piexlmax](https://github.com/piexlmax)
+func (busOrderService *BusOrderService) IngressBusOrder(ingressReq businessReq.BusIngressReq, c *gin.Context) (err error) {
+	// 创建BusIngress结构体
+	userID := utils.GetUserID(c) // 获取入库者ID
+	var ingress business.BusIngress
+	ingress.IngressManID = &userID
+	ingress.BusOrderID = ingressReq.BusOrderID
+
+	var ingressDetail business.BusIngressDetail
+	ingressDetail.GoodsDictID = ingressReq.GoodsDictID
+	ingressDetail.IngressNumber = ingressReq.IngressNumber
+
+	var ingressDetails []business.BusIngressDetail
+	ingressDetails = append(ingressDetails, ingressDetail)
+	ingress.BusIngressDetails = ingressDetails
+
+	err = global.GVA_DB.Create(&ingress).Error
+	// 创建BusGoods结构体
+	goods := business.BusGoods{
+		BusOrderID:     ingressReq.BusOrderID,
+		BusIngressID:   &(ingress.ID),
+		BusEgressID:    nil,
+		GoodsDictID:    ingressReq.GoodsDictID,
+		SerialNumber:   0,
+		Batch:          ingressReq.Batch,
+		ExpirationDate: ingressReq.ExpirationDate,
+		ContractCode:   ingressReq.ContractCode,
+	}
+	var goodsSlice []business.BusGoods
+	for i := 0; i < int(ingressDetail.IngressNumber); i++ {
+		goodsSlice = append(goodsSlice, goods)
+	}
+	err = global.GVA_DB.Create(&goodsSlice).Error
 	return err
 }
 
@@ -50,10 +89,39 @@ func (busOrderService *BusOrderService) GetBusOrder(id uint) (busOrder business.
 
 // GetBusOrderDetails 根据id获取GetBusOrderDetails
 // Author [piexlmax](https://github.com/piexlmax)
-func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (busOrder business.BusOrder, err error) {
+func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (reBusOrderDetails businessRe.ReBusOrderDetails, err error) {
+	var busOrder business.BusOrder
 	db := global.GVA_DB.Model(&business.BusOrder{})
 	err = db.Where("id = ?", orderID).Preload("BusOrderDetails.GoodsDict").First(&busOrder).Error
-	return busOrder, err
+
+	for i := 0; i < len(busOrder.BusOrderDetails); i++ {
+		reBusOrderDetail := businessRe.ReBusOrderDetail{
+			GoodsDict:       busOrder.BusOrderDetails[i].GoodsDict,
+			Number:          busOrder.BusOrderDetails[i].Number,
+			NumberAlreadyIn: 0,
+		}
+		//  根据orderID和goodDictID计算已入库数量
+		goodDictID := busOrder.BusOrderDetails[i].GoodsDictID
+		var ingresses []business.BusIngress
+		global.GVA_DB.Where("bus_order_id = ?", orderID).Preload("BusIngressDetails").Find(&ingresses)
+		for j := 0; j < len(ingresses); j++ {
+			for k := 0; k < len(ingresses[j].BusIngressDetails); k++ {
+				if *ingresses[j].BusIngressDetails[k].GoodsDictID == *goodDictID {
+					reBusOrderDetail.NumberAlreadyIn += ingresses[j].BusIngressDetails[k].IngressNumber
+				}
+			}
+		}
+		reBusOrderDetails.BusOrderDetails = append(reBusOrderDetails.BusOrderDetails, reBusOrderDetail)
+	}
+
+	return reBusOrderDetails, err
+}
+
+// GetBusOrderDetail 根据dict_id和bus_order_id获取BusOrderDetail
+func (busOrderService *BusOrderService) GetBusOrderDetail(detail *business.BusOrderDetail) (err error) {
+	db := global.GVA_DB.Model(&business.BusOrderDetail{})
+	err = db.Where("bus_order_id = ? and goods_dict_id = ?", detail.BusOrderID, detail.GoodsDictID).Preload("GoodsDict").First(detail).Error
+	return err
 }
 
 // GetBusOrderInfoList 分页获取BusOrder记录

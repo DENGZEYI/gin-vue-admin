@@ -88,7 +88,7 @@ func (BusGoodsDictService *BusGoodsDictService) ApplyGoodsByIds(busApplyInfo bus
 	}
 	order := business.BusOrder{
 		BusOrderDetails: orderDetails,
-		ApplicantID:     applicantID,
+		ApplicantID:     &applicantID,
 		State:           global.Processing,
 	}
 	err = global.GVA_DB.Create(&order).Error

@@ -72,6 +72,22 @@ export const updateBusOrder = (data) => {
   })
 }
 
+export const approveBusOrder = (data)=>{
+  return service({
+    url: '/busOrder/approveBusOrder',
+    method: 'put',
+    data
+  })
+}
+
+export const ingressBusOrder = (data)=>{
+  return service({
+    url: '/busOrder/ingressBusOrder',
+    method: 'put',
+    data
+  })
+}
+
 // @Tags BusOrder
 // @Summary 用id查询BusOrder
 // @Security ApiKeyAuth
@@ -91,6 +107,14 @@ export const findBusOrder = (params) => {
 export const findBusOrderDetails = (params) =>{
   return service({
     url: '/busOrder/findBusOrderDetails',
+    method: 'get',
+    params
+  })
+}
+
+export const getOrderDetail = (params)=>{
+  return service({
+    url: '/busOrder/getOrderDetail',
     method: 'get',
     params
   })

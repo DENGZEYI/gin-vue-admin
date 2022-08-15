@@ -9,7 +9,7 @@ import (
 
 type BusOrderDetail struct {
 	global.GVA_MODEL
-	BusOrderID  *uint
+	BusOrderID  *uint        `json:"bus_order_id" form:"bus_order_id" `
 	GoodsDict   BusGoodsDict `gorm:"foreignKey:GoodsDictID" json:"goods_dict" form:"goods_dict"`
 	GoodsDictID *uint        `json:"goods_dict_id" form:"goods_dict_id" `
 	Number      uint         `json:"number" form:"number" ` // 申请的数量
@@ -23,10 +23,10 @@ func (BusOrderDetail) TableName() string {
 // BusOrder 结构体
 type BusOrder struct {
 	global.GVA_MODEL
-	ApplicantID     uint
-	Applicant       system.SysUser `gorm:"foreignKey:ApplicantID"`
-	ApproverID      uint
-	Approver        system.SysUser   `gorm:"foreignKey:ApproverID"`
+	ApplicantID     *uint            `json:"applicant_id" form:"applicant_id"`
+	Applicant       system.SysUser   `gorm:"foreignKey:ApplicantID" json:"applicant" form:"applicant"`
+	ApproverID      *uint            `json:"approver_id" form:"approver_id"`
+	Approver        system.SysUser   `gorm:"foreignKey:ApproverID" json:"approver" form:"approver"`
 	State           uint             `json:"state" form:"state"`
 	BusOrderDetails []BusOrderDetail `gorm:"foreignKey:BusOrderID" json:"bus_order_details" form:"bus_order_details"`
 	Note            string           `json:"note" form:"note"` // 备注
@@ -49,10 +49,10 @@ type BusGoodsDict struct {
 	Price         int            `json:"price" form:"price" `
 	Factory       string         `json:"factory" form:"factory" `
 	Specification string         `json:"specification" form:"specification" `
-	GroupID       *uint
-	Group         BusGroup `gorm:"foreignKey:GroupID"`
-	ProviderID    *uint
-	Provider      BusProvider `gorm:"foreignKey:ProviderID"`
+	GroupID       *uint          `json:"group_id" form:"group_id" `
+	Group         BusGroup       `gorm:"foreignKey:GroupID" json:"group" form:"group"`
+	ProviderID    *uint          `json:"provider_id" form:"provider_id" `
+	Provider      BusProvider    `gorm:"foreignKey:ProviderID" json:"provider" form:"provider"`
 }
 
 // TableName BusGoods 表名
@@ -62,10 +62,10 @@ func (BusGoodsDict) TableName() string {
 
 type BusIngressDetail struct {
 	global.GVA_MODEL
-	BusIngressID *uint
-	GoodsDict    BusGoodsDict `gorm:"foreignKey:GoodsDictID" json:"goods_dict" form:"goods_dict"`
-	GoodsDictID  *uint        `json:"goods_dict_id" form:"goods_dict_id" `
-	Number       uint         `json:"number" form:"number" ` // 数量
+	BusIngressID  *uint        `json:"bus_ingress_id" form:"bus_ingress_id" `
+	GoodsDict     BusGoodsDict `gorm:"foreignKey:GoodsDictID" json:"goods_dict" form:"goods_dict"`
+	GoodsDictID   *uint        `json:"goods_dict_id" form:"goods_dict_id" `
+	IngressNumber uint         `json:"ingress_number" form:"ingress_number" ` // 数量
 }
 
 // TableName BusIngressDetail 表名
@@ -77,8 +77,9 @@ func (BusIngressDetail) TableName() string {
 type BusIngress struct {
 	global.GVA_MODEL
 	// 入库人
-	IngressMan        system.SysUser `gorm:"foreignKey:IngressManID"`
-	IngressManID      *uint
+	IngressMan        system.SysUser     `gorm:"foreignKey:IngressManID"`
+	IngressManID      *uint              `json:"bus_ingress_man_id" form:"bus_ingress_man_id" `
+	BusOrderID        *uint              `json:"bus_order_id" form:"bus_order_id"`
 	BusIngressDetails []BusIngressDetail `gorm:"foreignKey:BusIngressID" json:"bus_ingress_details" form:"bus_ingress_details"`
 }
 
@@ -131,8 +132,8 @@ func (BusUseDetail) TableName() string {
 type BusUse struct {
 	global.GVA_MODEL
 	// 使用耗材的人
-	User          system.SysUser `gorm:"foreignKey:UserID"`
-	UserID        *uint
+	User          system.SysUser `gorm:"foreignKey:UserID" json:"user" form:"user"`
+	UserID        *uint          `json:"user_id" form:"user_id"`
 	BusUseDetails []BusUseDetail `gorm:"foreignKey:BusUseID" json:"bus_use_details" form:"bus_use_details"`
 }
 
@@ -150,18 +151,18 @@ type BusGoods struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"` // 删除时间
 
 	// 属于哪个Order
-	BusOrder   BusOrder `gorm:"foreignKey:BusOrderID"`
+	BusOrder   BusOrder `gorm:"foreignKey:BusOrderID" json:"bus_order" form:"bus_order"`
 	BusOrderID *uint    `json:"bus_order_id" form:"bus_order_id" `
 
 	// 属于哪个Ingress
-	BusIngress   BusIngress `gorm:"foreignKey:BusIngressID"`
+	BusIngress   BusIngress `gorm:"foreignKey:BusIngressID" json:"bus_ingress" form:"bus_ingress"`
 	BusIngressID *uint      `json:"bus_ingress_id" form:"bus_ingress_id" `
 
 	// 属于哪个Egress
-	BusEgress   BusEgress `gorm:"foreignKey:BusEgressID"`
+	BusEgress   BusEgress `gorm:"foreignKey:BusEgressID" form:"bus_egress" json:"bus_egress"`
 	BusEgressID *uint     `json:"bus_egress_id" form:"bus_egress_id" `
 
-	GoodsDict   BusGoodsDict `gorm:"foreignKey:GoodsDictID"`
+	GoodsDict   BusGoodsDict `gorm:"foreignKey:GoodsDictID" json:"goods_dict" form:"goods_dict"`
 	GoodsDictID *uint        `json:"goods_dict_id" form:"goods_dict_id" `
 
 	SerialNumber   uint      `json:"serial_number" form:"serial_number" `     // 用于打印的序列号

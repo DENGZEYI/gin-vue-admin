@@ -19,8 +19,11 @@ func (s *BusOrderRouter) InitBusOrderRouter(Router *gin.RouterGroup) {
 		busOrderRouter.DELETE("deleteBusOrder", busOrderApi.DeleteBusOrder)           // 删除BusOrder
 		busOrderRouter.DELETE("deleteBusOrderByIds", busOrderApi.DeleteBusOrderByIds) // 批量删除BusOrder
 		busOrderRouter.PUT("updateBusOrder", busOrderApi.UpdateBusOrder)              // 更新BusOrder
+		busOrderRouter.PUT("approveBusOrder", busOrderApi.ApproveBusOrder)            // 审批BusOrder
+		busOrderRouter.PUT("ingressBusOrder", busOrderApi.IngressBusOrder)            // 审批BusOrder
 	}
 	{
+		busOrderRouterWithoutRecord.GET("getOrderDetail", busOrderApi.GetOrderDetail)   // 根据ID获取BusOrderDetail
 		busOrderRouterWithoutRecord.GET("findBusOrder", busOrderApi.FindBusOrder)       // 根据ID获取BusOrder
 		busOrderRouterWithoutRecord.GET("getBusOrderList", busOrderApi.GetBusOrderList) // 获取BusOrder列表
 		busOrderRouterWithoutRecord.GET("getOrderDetails", busOrderApi.GetOrderDetails)
