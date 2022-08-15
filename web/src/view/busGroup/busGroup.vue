@@ -31,9 +31,6 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="日期" width="180">
-            <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
-        </el-table-column>
         <el-table-column align="left" label="组别名称" prop="name" width="140" />
         <el-table-column align="left" label="按钮组">
             <template #default="scope">

@@ -45,11 +45,8 @@
       <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
         @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="ID" prop="ID" width="120" />
-        <el-table-column align="left" label="创建日期" width="180">
-          <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
-        </el-table-column>
-        <el-table-column align="left" label="名称" prop="name" width="120" />
+        <el-table-column align="left" label="耗材ID" prop="ID" width="120" />
+        <el-table-column align="left" label="耗材名称" prop="name" width="120" />
         <el-table-column align="left" label="价格" prop="price" width="120" />
         <el-table-column align="left" label="生产厂商" prop="factory" width="120" />
         <el-table-column align="left" label="规格" prop="specification" width="120" />
@@ -94,7 +91,7 @@
       </div>
       <!-- 表格主体 -->
       <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="selectedData" row-key="ID">
-        <el-table-column align="left" label="名称" prop="name" width="120" />
+        <el-table-column align="left" label="耗材名称" prop="name" width="120" />
         <el-table-column align="left" label="数量" prop="number" width="120">
           <template #default="scope">
             <input type="number" v-model="scope.row.number" v-show="scope.row.iseditor" />
@@ -112,8 +109,8 @@
 
     <!-- Goods表格弹窗 -->
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
-      <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
-        <el-form-item label="名称:" prop="name">
+      <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="120px">
+        <el-form-item label="耗材名称:" prop="name">
           <el-input v-model="formData.name" :clearable="true" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="价格:" prop="price">
