@@ -47,12 +47,14 @@ type BusGoodsDict struct {
 	Name          string         `json:"name" form:"name" `
 	Unit          string         `json:"unit" form:"unit" `
 	Price         int            `json:"price" form:"price" `
-	Factory       string         `json:"factory" form:"factory" `
+	FactoryID     *uint          `json:"factory_id" form:"factory_id" `
+	Factory       BusFactory     `json:"factory" form:"factory" `
 	Specification string         `json:"specification" form:"specification" `
 	GroupID       *uint          `json:"group_id" form:"group_id" `
 	Group         BusGroup       `gorm:"foreignKey:GroupID" json:"group" form:"group"`
 	ProviderID    *uint          `json:"provider_id" form:"provider_id" `
 	Provider      BusProvider    `gorm:"foreignKey:ProviderID" json:"provider" form:"provider"`
+	ContractCode  string         `json:"contract_code" form:"contract_code"` // 合同代码
 }
 
 // TableName BusGoods 表名
@@ -168,7 +170,7 @@ type BusGoods struct {
 	SerialNumber   uint      `json:"serial_number" form:"serial_number" `     // 用于打印的序列号
 	Batch          string    `json:"batch" form:"batch" `                     // 批号
 	ExpirationDate time.Time `json:"expiration_date" form:"expiration_date" ` // 有效期
-	ContractCode   string    `json:"contract_code" form:"contract_code"`      // 合同代码
+	InvoiceNumber  string    `json:"invoice_number" form:"invoice_number"`    // 发票号
 }
 
 // TableName BusGoods 表名
@@ -201,4 +203,15 @@ type BusProvider struct {
 // TableName BusProvider 表名
 func (BusProvider) TableName() string {
 	return "bus_provider"
+}
+
+// BusFactory 结构体
+type BusFactory struct {
+	global.GVA_MODEL
+	Name string `json:"name" form:"name" ` // 公司名称
+}
+
+// TableName BusFactory 表名
+func (BusFactory) TableName() string {
+	return "bus_factory"
 }

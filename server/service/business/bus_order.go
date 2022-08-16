@@ -70,7 +70,7 @@ func (busOrderService *BusOrderService) IngressBusOrder(ingressReq businessReq.B
 		SerialNumber:   0,
 		Batch:          ingressReq.Batch,
 		ExpirationDate: ingressReq.ExpirationDate,
-		ContractCode:   ingressReq.ContractCode,
+		InvoiceNumber:  ingressReq.InvoiceNumber,
 	}
 	var goodsSlice []business.BusGoods
 	for i := 0; i < int(ingressDetail.IngressNumber); i++ {

@@ -23,5 +23,5 @@ type BusIngressReq struct {
 	BusOrderID     *uint     `json:"bus_order_id" form:"bus_order_id"`
 	Batch          string    `json:"batch" form:"batch" `                     // 批号
 	ExpirationDate time.Time `json:"expiration_date" form:"expiration_date" ` // 有效期
-	ContractCode   string    `json:"contract_code" form:"contract_code"`      // 合同代码
+	InvoiceNumber  string    `json:"invoice_number" form:"invoice_number"`    // 发票号
 }

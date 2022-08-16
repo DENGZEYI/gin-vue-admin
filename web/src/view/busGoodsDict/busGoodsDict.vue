@@ -17,7 +17,7 @@
           </el-select>
         </el-form-item>
         <!-- 名称 -->
-        <el-form-item label="名称">
+        <el-form-item label="耗材名称">
           <el-input v-model="searchInfo.name" placeholder="请输入名称" />
         </el-form-item>
         <el-form-item>
@@ -47,15 +47,17 @@
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="耗材ID" prop="ID" width="120" />
         <el-table-column align="left" label="耗材名称" prop="name" width="120" />
-        <el-table-column align="left" label="价格" prop="price" width="120" />
-        <el-table-column align="left" label="生产厂商" prop="factory" width="120" />
-        <el-table-column align="left" label="规格" prop="specification" width="120" />
-        <el-table-column align="left" label="组别" prop="groupId" width="120">
-          <template #default="scope">{{ filterDict(scope.row.GroupID, groupOptions) }}</template>
+        <el-table-column align="left" label="组别" prop="group_id" width="120">
+          <template #default="scope">{{ filterDict(scope.row.group_id, groupOptions) }}</template>
         </el-table-column>
-        <!-- ProviderID 注意名称大小写 -->
-        <el-table-column align="left" label="供应商" prop="ProviderID" width="120">
-          <template #default="scope">{{ filterDict(scope.row.ProviderID, providerOptions) }}</template>
+        <el-table-column align="left" label="价格" prop="price" width="120" />
+        <el-table-column align="left" label="规格" prop="specification" width="120" />
+        <el-table-column align="left" label="合同代码" prop="contract_code" width="120" />
+        <el-table-column align="left" label="生产厂商" prop="factory_id" width="120">
+          <template #default="scope">{{ filterDict(scope.row.factory_id, factoryOptions) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="供应商" prop="provider_id" width="120">
+          <template #default="scope">{{ filterDict(scope.row.provider_id, providerOptions) }}</template>
         </el-table-column>
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
@@ -116,20 +118,26 @@
         <el-form-item label="价格:" prop="price">
           <el-input v-model.number="formData.price" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="生产厂商:" prop="factory">
-          <el-input v-model="formData.factory" :clearable="true" placeholder="请输入" />
+        <el-form-item label="生产厂商:" prop="factory_id">
+          <el-select v-model="formData.factory_id" placeholder="请选择" :clearable="true">
+            <el-option v-for="(item, key) in factoryOptions" :key="key" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
         <el-form-item label="规格:" prop="specification">
           <el-input v-model="formData.specification" :clearable="true" placeholder="请输入" />
         </el-form-item>
 
-        <el-form-item label="组别:" prop="GroupID">
-          <el-select v-model="formData.GroupID" placeholder="请选择" :clearable="true">
+        <el-form-item label="合同代码:" prop="contract_code">
+          <el-input v-model="formData.contract_code" :clearable="true" placeholder="请输入" />
+        </el-form-item>
+
+        <el-form-item label="组别:" prop="group_id">
+          <el-select v-model="formData.group_id" placeholder="请选择" :clearable="true">
             <el-option v-for="(item, key) in groupOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="供应商:" prop="ProviderID">
-          <el-select v-model="formData.ProviderID" placeholder="请选择" :clearable="true">
+        <el-form-item label="供应商:" prop="provider_id">
+          <el-select v-model="formData.provider_id" placeholder="请选择" :clearable="true">
             <el-option v-for="(item, key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -171,10 +179,10 @@ import { ref, reactive } from 'vue'
 const formData = ref({
   name: '',
   price: 0,
-  factory: '',
   specification: '',
-  GroupID: undefined,
-  ProviderID: undefined,
+  factory_id: undefined,
+  group_id: undefined,
+  provider_id: undefined,
 })
 
 // 验证规则
@@ -239,9 +247,11 @@ getTableData()
 // 获取需要的字典 可能为空 按需保留
 const providerOptions = ref([])
 const groupOptions = ref([])
+const factoryOptions = ref([])
 const setOptions = async () => {
   providerOptions.value = await getBusDictFunc('provider')
   groupOptions.value = await getBusDictFunc('group')
+  factoryOptions.value = await getBusDictFunc("factory")
 }
 
 // 获取需要的字典 可能为空 按需保留

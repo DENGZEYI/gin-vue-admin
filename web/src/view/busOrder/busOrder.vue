@@ -65,10 +65,10 @@
           <el-input v-model="ingressFormData.batch" :clearable="true" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="有效日期:" prop="expiration_date">
-          <el-date-picker v-model="ingressFormData.expiration_date" type="datetime" :default-time="defaultTime" placeholder="请输入有效日期" />
+          <el-date-picker v-model="ingressFormData.expiration_date" type="date" :default-time="defaultTime" placeholder="请输入有效日期" />
         </el-form-item>
-        <el-form-item label="合同代码:" prop="contract_code">
-          <el-input v-model="ingressFormData.contract_code" :clearable="true" placeholder="请输入" />
+        <el-form-item label="发票号:" prop="invoice_number">
+          <el-input v-model="ingressFormData.invoice_number" :clearable="true" placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>

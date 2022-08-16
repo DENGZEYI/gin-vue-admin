@@ -28,6 +28,13 @@ func (busDictionaryApi *BusDictionaryApi) FindBusDictionary(c *gin.Context) {
 		} else {
 			response.OkWithData(gin.H{"rebusDict": rebusGroupDict}, c)
 		}
+	} else if dictInfo.DictName == "factory" {
+		if rebusFactoryDict, err := busFactoryService.GetBusFactoryDict(); err != nil {
+			global.GVA_LOG.Error("查询失败!", zap.Error(err))
+			response.FailWithMessage("查询失败", c)
+		} else {
+			response.OkWithData(gin.H{"rebusDict": rebusFactoryDict}, c)
+		}
 	} else if dictInfo.DictName == "applyState" {
 		if rebusApplyStateDict, err := busOrderService.GetBusStateDict(); err != nil {
 			global.GVA_LOG.Error("查询失败!", zap.Error(err))

@@ -54,6 +54,9 @@ func (busProviderService *BusProviderService) GetBusProviderInfoList(info busine
 	db := global.GVA_DB.Model(&business.BusProvider{})
 	var busProviders []business.BusProvider
 	// 如果有条件搜索 下方会自动创建搜索语句
+	if info.Name != "" {
+		db = db.Where("name LIKE ?", "%"+info.Name+"%")
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return

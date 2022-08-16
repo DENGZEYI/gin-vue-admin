@@ -2,7 +2,7 @@
   <div>
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-        <el-form-item label="供应商名称">
+        <el-form-item label="生产厂商名称">
           <el-input v-model="searchInfo.name" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
@@ -29,16 +29,11 @@
       <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
         @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="供应商名称" prop="name" width="160" />
-        <el-table-column align="left" label="供应商法人姓名" prop="corporation" width="160" />
-        <el-table-column align="left" label="供应商法人身份证" prop="corporation_id" width="160" />
-        <el-table-column align="left" label="供应商经办人姓名" prop="agent" width="160" />
-        <el-table-column align="left" label="供应商经办人身份证" prop="agent_id" width="160" />
-        <el-table-column align="left" label="电话号码" prop="telephone" width="160" />
+        <el-table-column align="left" label="生产厂商名称" prop="name" width="120" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button type="primary" link icon="edit" size="small" class="table-button"
-              @click="updateBusProviderFunc(scope.row)">变更</el-button>
+              @click="updateBusFactoryFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -51,23 +46,8 @@
     </div>
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
       <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="160px">
-        <el-form-item label="供应商名称:" prop="name">
+        <el-form-item label="生产厂商名称:" prop="name">
           <el-input v-model="formData.name" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="供应商法人姓名:" prop="name">
-          <el-input v-model="formData.corporation" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="供应商法人身份证:" prop="name">
-          <el-input v-model="formData.corporation_id" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="供应商经办人姓名:" prop="name">
-          <el-input v-model="formData.corporation" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="供应商经办人身份证:" prop="name">
-          <el-input v-model="formData.corporation_id" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="电话号码:" prop="telephone">
-          <el-input v-model.number="formData.telephone" :clearable="true" placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -82,19 +62,19 @@
 
 <script>
 export default {
-  name: 'BusProvider'
+  name: 'BusFactory'
 }
 </script>
 
 <script setup>
 import {
-  createBusProvider,
-  deleteBusProvider,
-  deleteBusProviderByIds,
-  updateBusProvider,
-  findBusProvider,
-  getBusProviderList
-} from '@/api/busProvider'
+  createBusFactory,
+  deleteBusFactory,
+  deleteBusFactoryByIds,
+  updateBusFactory,
+  findBusFactory,
+  getBusFactoryList
+} from '@/api/busFactory'
 
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict } from '@/utils/format'
@@ -104,7 +84,6 @@ import { ref, reactive } from 'vue'
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
   name: '',
-  telephone: 0,
 })
 
 // 验证规则
@@ -152,7 +131,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async () => {
-  const table = await getBusProviderList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getBusFactoryList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -187,7 +166,7 @@ const deleteRow = (row) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    deleteBusProviderFunc(row)
+    deleteBusFactoryFunc(row)
   })
 }
 
@@ -209,7 +188,7 @@ const onDelete = async () => {
     multipleSelection.value.map(item => {
       ids.push(item.ID)
     })
-  const res = await deleteBusProviderByIds({ ids })
+  const res = await deleteBusFactoryByIds({ ids })
   if (res.code === 0) {
     ElMessage({
       type: 'success',
@@ -227,19 +206,19 @@ const onDelete = async () => {
 const type = ref('')
 
 // 更新行
-const updateBusProviderFunc = async (row) => {
-  const res = await findBusProvider({ ID: row.ID })
+const updateBusFactoryFunc = async (row) => {
+  const res = await findBusFactory({ ID: row.ID })
   type.value = 'update'
   if (res.code === 0) {
-    formData.value = res.data.rebusProvider
+    formData.value = res.data.rebusFactory
     dialogFormVisible.value = true
   }
 }
 
 
 // 删除行
-const deleteBusProviderFunc = async (row) => {
-  const res = await deleteBusProvider({ ID: row.ID })
+const deleteBusFactoryFunc = async (row) => {
+  const res = await deleteBusFactory({ ID: row.ID })
   if (res.code === 0) {
     ElMessage({
       type: 'success',
@@ -266,7 +245,6 @@ const closeDialog = () => {
   dialogFormVisible.value = false
   formData.value = {
     name: '',
-    telephone: 0,
   }
 }
 // 弹窗确定
@@ -276,13 +254,13 @@ const enterDialog = async () => {
     let res
     switch (type.value) {
       case 'create':
-        res = await createBusProvider(formData.value)
+        res = await createBusFactory(formData.value)
         break
       case 'update':
-        res = await updateBusProvider(formData.value)
+        res = await updateBusFactory(formData.value)
         break
       default:
-        res = await createBusProvider(formData.value)
+        res = await createBusFactory(formData.value)
         break
     }
     if (res.code === 0) {
