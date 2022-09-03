@@ -40,21 +40,21 @@ func (BusOrder) TableName() string {
 // BusGoodsDict 结构体
 // 记录了耗材的基本信息
 type BusGoodsDict struct {
-	ID            uint           `gorm:"primarykey"` // 主键ID
-	CreatedAt     time.Time      // 创建时间
-	UpdatedAt     time.Time      // 更新时间
-	DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"` // 删除时间
-	Name          string         `json:"name" form:"name" `
-	Unit          string         `json:"unit" form:"unit" `
-	Price         int            `json:"price" form:"price" `
-	FactoryID     *uint          `json:"factory_id" form:"factory_id" `
-	Factory       BusFactory     `json:"factory" form:"factory" `
-	Specification string         `json:"specification" form:"specification" `
-	GroupID       *uint          `json:"group_id" form:"group_id" `
-	Group         BusGroup       `gorm:"foreignKey:GroupID" json:"group" form:"group"`
-	ProviderID    *uint          `json:"provider_id" form:"provider_id" `
-	Provider      BusProvider    `gorm:"foreignKey:ProviderID" json:"provider" form:"provider"`
-	ContractCode  string         `json:"contract_code" form:"contract_code"` // 合同代码
+	ID            uint            `gorm:"primarykey"` // 主键ID
+	CreatedAt     time.Time       // 创建时间
+	UpdatedAt     time.Time       // 更新时间
+	DeletedAt     gorm.DeletedAt  `gorm:"index" json:"-"` // 删除时间
+	Name          string          `json:"name" form:"name" `
+	Unit          string          `json:"unit" form:"unit" `
+	Price         int             `json:"price" form:"price" `
+	FactoryID     *uint           `json:"factory_id" form:"factory_id" `
+	Factory       BusFactory      `json:"factory" form:"factory" `
+	Specification string          `json:"specification" form:"specification" `
+	GroupID       *uint           `json:"group_id" form:"group_id" `
+	Group         system.BusGroup `gorm:"foreignKey:GroupID" json:"group" form:"group"`
+	ProviderID    *uint           `json:"provider_id" form:"provider_id" `
+	Provider      BusProvider     `gorm:"foreignKey:ProviderID" json:"provider" form:"provider"`
+	ContractCode  string          `json:"contract_code" form:"contract_code"` // 合同代码
 }
 
 // TableName BusGoods 表名
@@ -176,17 +176,6 @@ type BusGoods struct {
 // TableName BusGoods 表名
 func (BusGoods) TableName() string {
 	return "bus_goods"
-}
-
-// BusGroup 结构体
-type BusGroup struct {
-	global.GVA_MODEL
-	Name string `json:"name" form:"name" gorm:"column:name;comment:;"`
-}
-
-// TableName BusGroup 表名
-func (BusGroup) TableName() string {
-	return "bus_group"
 }
 
 // BusProvider 结构体

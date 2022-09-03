@@ -2,10 +2,10 @@ package business
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/business"
 	businessReq "github.com/flipped-aurora/gin-vue-admin/server/model/business/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
@@ -27,7 +27,7 @@ var busGroupService = service.ServiceGroupApp.BusinessServiceGroup.BusGroupServi
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /busGroup/createBusGroup [post]
 func (busGroupApi *BusGroupApi) CreateBusGroup(c *gin.Context) {
-	var busGroup business.BusGroup
+	var busGroup system.BusGroup
 	_ = c.ShouldBindJSON(&busGroup)
 	verify := utils.Rules{
 		"Name": {utils.NotEmpty()},
@@ -54,7 +54,7 @@ func (busGroupApi *BusGroupApi) CreateBusGroup(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /busGroup/deleteBusGroup [delete]
 func (busGroupApi *BusGroupApi) DeleteBusGroup(c *gin.Context) {
-	var busGroup business.BusGroup
+	var busGroup system.BusGroup
 	_ = c.ShouldBindJSON(&busGroup)
 	if err := busGroupService.DeleteBusGroup(busGroup); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
@@ -94,7 +94,7 @@ func (busGroupApi *BusGroupApi) DeleteBusGroupByIds(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /busGroup/updateBusGroup [put]
 func (busGroupApi *BusGroupApi) UpdateBusGroup(c *gin.Context) {
-	var busGroup business.BusGroup
+	var busGroup system.BusGroup
 	_ = c.ShouldBindJSON(&busGroup)
 	verify := utils.Rules{
 		"Name": {utils.NotEmpty()},
@@ -121,7 +121,7 @@ func (busGroupApi *BusGroupApi) UpdateBusGroup(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /busGroup/findBusGroup [get]
 func (busGroupApi *BusGroupApi) FindBusGroup(c *gin.Context) {
-	var busGroup business.BusGroup
+	var busGroup system.BusGroup
 	_ = c.ShouldBindQuery(&busGroup)
 	if rebusGroup, err := busGroupService.GetBusGroup(busGroup.ID); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))

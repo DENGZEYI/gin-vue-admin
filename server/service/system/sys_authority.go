@@ -211,3 +211,8 @@ func (authorityService *AuthorityService) findChildrenAuthority(authority *syste
 	}
 	return err
 }
+
+func (authorityService *AuthorityService) FindAuthorityByID(ID *uint) (auth system.SysAuthority, err error) {
+	err = global.GVA_DB.Preload("BusGroup").First(&auth, "authority_id = ?", ID).Error
+	return auth, err
+}
