@@ -16,6 +16,7 @@ type BusGoodsDictApi struct {
 }
 
 var BusGoodsDictService = service.ServiceGroupApp.BusinessServiceGroup.BusGoodsDictService
+var AuthorityService = service.ServiceGroup{}.SystemServiceGroup.AuthorityService
 
 // CreateBusGoodsDict 创建BusGoodsDict
 // @Tags BusGoodsDict
@@ -142,8 +143,17 @@ func (BusGoodsDictApi *BusGoodsDictApi) FindBusGoodsDict(c *gin.Context) {
 // @Router /BusGoodsDict/getBusGoodsDictList [get]
 func (BusGoodsDictApi *BusGoodsDictApi) GetBusGoodsDictList(c *gin.Context) {
 	var pageInfo businessReq.BusGoodsDictSearch
+	// 获取用户角色
+	authID := utils.GetUserAuthorityId(c)
+	auth, err := AuthorityService.FindAuthorityByID(&authID)
+	if err != nil {
+		global.GVA_LOG.Error("获取用户角色失败!", zap.Error(err))
+		response.FailWithMessage("获取用户角色失败", c)
+		return
+	}
+	// 查询耗材
 	_ = c.ShouldBindQuery(&pageInfo)
-	if list, total, err := BusGoodsDictService.GetBusGoodsDictInfoList(pageInfo); err != nil {
+	if list, total, err := BusGoodsDictService.GetBusGoodsDictInfoList(pageInfo, auth); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

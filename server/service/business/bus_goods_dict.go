@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business"
 	businessReq "github.com/flipped-aurora/gin-vue-admin/server/model/business/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -49,17 +50,19 @@ func (BusGoodsDictService *BusGoodsDictService) GetBusGoodsDict(id uint) (BusGoo
 
 // GetBusGoodsDictInfoList 分页获取BusGoodsDict记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (BusGoodsDictService *BusGoodsDictService) GetBusGoodsDictInfoList(info businessReq.BusGoodsDictSearch) (list []business.BusGoodsDict, total int64, err error) {
+func (BusGoodsDictService *BusGoodsDictService) GetBusGoodsDictInfoList(info businessReq.BusGoodsDictSearch, auth system.SysAuthority) (list []business.BusGoodsDict, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
 	db := global.GVA_DB.Model(&business.BusGoodsDict{})
 	var BusGoodsDicts []business.BusGoodsDict
 	// 如果有条件搜索 下方会自动创建搜索语句
-	if info.GroupID != nil {
-		// 避免使用sql关键词GROUP，所以需要使用`进行转义
-		db = db.Where("`group_id` = ?", info.GroupID)
-	}
+	// 将groupID强制修改为角色所属的GroupID
+	groupID := info.GroupID
+	groupID = auth.GroupID
+	// 避免使用sql关键词GROUP，所以需要使用`进行转义
+	db = db.Where("`group_id` = ?", groupID)
+
 	if info.ProviderID != nil {
 		db = db.Where("`provider_id` = ?", info.ProviderID)
 	}
