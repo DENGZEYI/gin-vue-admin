@@ -54,17 +54,17 @@
         <el-form-item label="供应商名称:" prop="name">
           <el-input v-model="formData.name" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="供应商法人姓名:" prop="name">
+        <el-form-item label="供应商法人姓名:" prop="corporation">
           <el-input v-model="formData.corporation" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="供应商法人身份证:" prop="name">
+        <el-form-item label="供应商法人身份证:" prop="corporation_id">
           <el-input v-model="formData.corporation_id" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="供应商经办人姓名:" prop="name">
-          <el-input v-model="formData.corporation" :clearable="true" placeholder="请输入" />
+        <el-form-item label="供应商经办人姓名:" prop="agent">
+          <el-input v-model="formData.agent" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="供应商经办人身份证:" prop="name">
-          <el-input v-model="formData.corporation_id" :clearable="true" placeholder="请输入" />
+        <el-form-item label="供应商经办人身份证:" prop="agent_id">
+          <el-input v-model="formData.agent_id" :clearable="true" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="电话号码:" prop="telephone">
           <el-input v-model.number="formData.telephone" :clearable="true" placeholder="请输入" />
@@ -111,7 +111,7 @@ const formData = ref({
 const rule = reactive({
   name: [{
     required: true,
-    message: '',
+    message: '请输入名称',
     trigger: ['input', 'blur'],
   }],
 })

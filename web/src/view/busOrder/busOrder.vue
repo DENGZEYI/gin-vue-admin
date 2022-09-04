@@ -61,12 +61,17 @@
         <el-form-item label="入库数量:" prop="ingressNumber">
           <el-input v-model.number="ingressFormData.ingress_number" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="批次:" prop="batch">
+        <el-form-item label="批号:" prop="batch">
           <el-input v-model="ingressFormData.batch" :clearable="true" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="有效日期:" prop="expiration_date">
           <el-date-picker v-model="ingressFormData.expiration_date" type="date" :default-time="defaultTime" placeholder="请输入有效日期" />
         </el-form-item>
+        
+        <el-form-item label="送货单号:" prop="invoice_number">
+          <el-input v-model="ingressFormData.delivery_number" :clearable="true" placeholder="请输入" />
+        </el-form-item>
+
         <el-form-item label="发票号:" prop="invoice_number">
           <el-input v-model="ingressFormData.invoice_number" :clearable="true" placeholder="请输入" />
         </el-form-item>

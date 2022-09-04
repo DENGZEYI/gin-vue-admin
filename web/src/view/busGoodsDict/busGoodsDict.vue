@@ -3,16 +3,16 @@
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <!-- 供应商 -->
-        <el-form-item label="供应商" prop="ProviderID">
-          <el-select v-model="searchInfo.ProviderID" clearable placeholder="请选择"
-            @clear="() => { searchInfo.ProviderID = undefined }">
+        <el-form-item label="供应商" prop="provider_id">
+          <el-select v-model="searchInfo.provider_id" clearable placeholder="请选择"
+            @clear="() => { searchInfo.provider_id = undefined }">
             <el-option v-for="(item, key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <!-- 组别 -->
-        <el-form-item label="组别" prop="GroupID">
-          <el-select v-model="searchInfo.GroupID" clearable placeholder="请选择"
-            @clear="() => { searchInfo.GroupID = undefined }">
+        <el-form-item label="组别" prop="group_id">
+          <el-select v-model="searchInfo.group_id" clearable placeholder="请选择"
+            @clear="() => { searchInfo.group_id = undefined }">
             <el-option v-for="(item, key) in groupOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -50,10 +50,14 @@
         <el-table-column align="left" label="组别" prop="group_id" width="120">
           <template #default="scope">{{ filterDict(scope.row.group_id, groupOptions) }}</template>
         </el-table-column>
+        <!-- 
         <el-table-column align="left" label="价格" prop="price" width="120" />
+        -->
         <el-table-column align="left" label="规格" prop="specification" width="120" />
+        <!-- 
         <el-table-column align="left" label="合同代码" prop="contract_code" width="120" />
-        <el-table-column align="left" label="生产厂商" prop="factory_id" width="120">
+        -->
+        <el-table-column align="left" label="生产商" prop="factory_id" width="120">
           <template #default="scope">{{ filterDict(scope.row.factory_id, factoryOptions) }}</template>
         </el-table-column>
         <el-table-column align="left" label="供应商" prop="provider_id" width="120">
@@ -115,13 +119,20 @@
         <el-form-item label="耗材名称:" prop="name">
           <el-input v-model="formData.name" :clearable="true" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="价格:" prop="price">
-          <el-input v-model.number="formData.price" :clearable="true" placeholder="请输入" />
+        <el-form-item label="组别:" prop="group_id">
+          <el-select v-model="formData.group_id" placeholder="请选择" :clearable="true">
+            <el-option v-for="(item, key) in groupOptions" :key="key" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="生产厂商:" prop="factory_id">
+        <el-form-item label="生产商:" prop="factory_id">
           <el-select v-model="formData.factory_id" placeholder="请选择" :clearable="true">
             <el-option v-for="(item, key) in factoryOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
+        <el-form-item label="供应商:" prop="provider_id">
+          <el-select v-model="formData.provider_id" placeholder="请选择" :clearable="true">
+            <el-option v-for="(item, key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
         </el-form-item>
         <el-form-item label="规格:" prop="specification">
           <el-input v-model="formData.specification" :clearable="true" placeholder="请输入" />
@@ -130,16 +141,8 @@
         <el-form-item label="合同代码:" prop="contract_code">
           <el-input v-model="formData.contract_code" :clearable="true" placeholder="请输入" />
         </el-form-item>
-
-        <el-form-item label="组别:" prop="group_id">
-          <el-select v-model="formData.group_id" placeholder="请选择" :clearable="true">
-            <el-option v-for="(item, key) in groupOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="供应商:" prop="provider_id">
-          <el-select v-model="formData.provider_id" placeholder="请选择" :clearable="true">
-            <el-option v-for="(item, key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
+        <el-form-item label="价格:" prop="price">
+          <el-input v-model.number="formData.price" :clearable="true" placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>

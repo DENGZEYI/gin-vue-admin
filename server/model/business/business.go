@@ -169,6 +169,7 @@ type BusGoods struct {
 
 	SerialNumber   uint      `json:"serial_number" form:"serial_number" `     // 用于打印的序列号
 	Batch          string    `json:"batch" form:"batch" `                     // 批号
+	DeliveryNumber string    `json:"delivery_number" form:"delivery_number" ` //送货单号
 	ExpirationDate time.Time `json:"expiration_date" form:"expiration_date" ` // 有效期
 	InvoiceNumber  string    `json:"invoice_number" form:"invoice_number"`    // 发票号
 }

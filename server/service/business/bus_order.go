@@ -69,6 +69,7 @@ func (busOrderService *BusOrderService) IngressBusOrder(ingressReq businessReq.B
 		GoodsDictID:    ingressReq.GoodsDictID,
 		SerialNumber:   0,
 		Batch:          ingressReq.Batch,
+		DeliveryNumber: ingressReq.DeliveryNumber,
 		ExpirationDate: ingressReq.ExpirationDate,
 		InvoiceNumber:  ingressReq.InvoiceNumber,
 	}
@@ -137,7 +138,8 @@ func (busOrderService *BusOrderService) GetBusOrderInfoList(info businessReq.Bus
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Preload("Applicant").Preload("Approver").Find(&busOrders).Error
+	orderStr := "id desc"
+	err = db.Limit(limit).Offset(offset).Order(orderStr).Preload("Applicant").Preload("Approver").Find(&busOrders).Error
 	return busOrders, total, err
 }
 
@@ -146,15 +148,15 @@ func (busOrderService *BusOrderService) GetBusStateDict() (list []global.ApplySt
 	var applyStateDict []global.ApplyState
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Processing,
-		Name: "申请中",
+		Name: "采购申请中",
 	})
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Pass,
-		Name: "申请通过",
+		Name: "审批通过",
 	})
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Fail,
-		Name: "申请不通过",
+		Name: "审批不通过",
 	})
 	return applyStateDict, nil
 }
