@@ -8,6 +8,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 type BusOrderService struct {
@@ -38,6 +39,7 @@ func (busOrderService *BusOrderService) DeleteBusOrderByIds(ids request.IdsReq) 
 func (busOrderService *BusOrderService) UpdateBusOrder(busOrder business.BusOrder, c *gin.Context) (err error) {
 	userID := utils.GetUserID(c) // 获取审批者ID
 	busOrder.ApproverID = &userID
+	busOrder.ApproveTime = time.Now()
 	err = global.GVA_DB.Updates(&busOrder).Error
 	return err
 }
@@ -45,8 +47,9 @@ func (busOrderService *BusOrderService) UpdateBusOrder(busOrder business.BusOrde
 // PurchaseBusOrder 采购订购单
 func (busOrderService *BusOrderService) PurchaseBusOrder(busOrder business.BusOrder, c *gin.Context) (err error) {
 	userID := utils.GetUserID(c) // 获取审批者ID
-	busOrder.ApproverID = &userID
+	busOrder.PurchaserID = &userID
 	busOrder.State = global.Purchasing
+	busOrder.PurchaseTime = time.Now()
 	err = global.GVA_DB.Updates(&busOrder).Error
 	return err
 }
@@ -147,7 +150,7 @@ func (busOrderService *BusOrderService) GetBusOrderInfoList(info businessReq.Bus
 		return
 	}
 	orderStr := "id desc"
-	err = db.Limit(limit).Offset(offset).Order(orderStr).Preload("Applicant").Preload("Approver").Find(&busOrders).Error
+	err = db.Limit(limit).Offset(offset).Order(orderStr).Preload("Applicant").Preload("Approver").Preload("Purchaser").Find(&busOrders).Error
 	return busOrders, total, err
 }
 
@@ -165,6 +168,10 @@ func (busOrderService *BusOrderService) GetBusStateDict() (list []global.ApplySt
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Fail,
 		Name: "审批不通过",
+	})
+	applyStateDict = append(applyStateDict, global.ApplyState{
+		ID:   global.Purchasing,
+		Name: "采购",
 	})
 	return applyStateDict, nil
 }

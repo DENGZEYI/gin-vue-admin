@@ -27,6 +27,10 @@ type BusOrder struct {
 	Applicant       system.SysUser   `gorm:"foreignKey:ApplicantID" json:"applicant" form:"applicant"`
 	ApproverID      *uint            `json:"approver_id" form:"approver_id"`
 	Approver        system.SysUser   `gorm:"foreignKey:ApproverID" json:"approver" form:"approver"`
+	ApproveTime     time.Time        `json:"approve_time" form:"approve_time"` // 审批时间
+	Purchaser       system.SysUser   `gorm:"foreignKey:PurchaserID" json:"purchaser" form:"purchaser"`
+	PurchaserID     *uint            `json:"purchaser_id" form:"purchaser_id"`
+	PurchaseTime    time.Time        `json:"purchase_time" form:"purchase_time"` // 审批时间
 	State           uint             `json:"state" form:"state"`
 	BusOrderDetails []BusOrderDetail `gorm:"foreignKey:BusOrderID" json:"bus_order_details" form:"bus_order_details"`
 	Note            string           `json:"note" form:"note"` // 备注

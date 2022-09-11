@@ -21,23 +21,34 @@
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="申请单ID" prop="ID" width="120" />
+        <el-table-column align="left" label="申请单ID" prop="ID" width="100" />
         <el-table-column align="left" label="申请提交日期" width="180">
           <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column align="left" label="申请人" prop="applicant.nickName" width="120" />
         <el-table-column align="left" label="申请审批日期" width="180">
-          <template #default="scope">{{ formatDate(scope.row.UpdatedAt) }}</template>
+          <template #default="scope">{{ formatDate(scope.row.approve_time) }}</template>
         </el-table-column>
         <el-table-column align="left" label="审批人" prop="approver.nickName" width="120" />
+        <el-table-column align="left" label="申请采购日期" width="180">
+          <template #default="scope">{{ formatDate(scope.row.purchase_time) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="采购人" prop="purchaser.nickName" width="120" />
         <el-table-column align="left" label="申请状态" prop="state" width="120">
           <template #default="scope">{{ filterDict(scope.row.state, applyStateOptions) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="按钮组">
+        <el-table-column align="left" label="审批按钮" width="300">
           <template #default="scope">
-            <el-button type="success" @click="approveFunc(scope.row,'success')">审批通过</el-button>
-            <el-button type="danger" @click="approveFunc(scope.row,'fail')">审批退回</el-button>
-            <el-button type="primary" @click="purchaseFunc(scope.row)">采购</el-button>
+            <el-button type="success" :disabled="scope.row.state !== orderOptions['PROCESSING']"
+              @click="approveFunc(scope.row,'success')">审批通过</el-button>
+            <el-button type="danger" :disabled="scope.row.state !== orderOptions['PROCESSING']"
+              @click="approveFunc(scope.row,'fail')">审批退回</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" label="采购按钮" width="300">
+          <template #default="scope">
+            <el-button type="primary" :disabled="scope.row.state !== orderOptions['PASS']"
+              @click="purchaseFunc(scope.row)">采购</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -64,6 +75,10 @@ import {
   purchase
 } from '@/api/busOrder'
 
+import {
+  orderOptions
+} from '@/view/global/global'
+
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, getBusDictFunc, formatDate, formatBoolean, filterDict } from '@/utils/format'
 import { ElMessage } from 'element-plus'
@@ -79,8 +94,6 @@ const purchaseData = ref({
   ID: 0,
 })
 
-
-const elFormRef = ref()
 
 
 // =========== 表格控制部分 ===========
@@ -147,11 +160,11 @@ const expandChange = async (row) => {
 // 审批订购单
 const approveFunc = async (row, type) => {
   if (type === 'success') {
-    approveData.state = 2
+    approveData.state = orderOptions["PASS"]
   } else if (type === 'fail') {
-    approveData.state = 3
-  }else{
-    approveData.state = 1
+    approveData.state = orderOptions["FAIL"]
+  } else {
+    approveData.state = orderOptions["PROCESSING"]
   }
   approveData.ID = row.ID
   const res = await approve(approveData)
