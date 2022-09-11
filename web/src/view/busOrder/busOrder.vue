@@ -18,12 +18,6 @@
               <el-table-column label="耗材名称" prop="goods_dict.name" width="120" />
               <el-table-column label="申请数量" prop="number" width="120" />
               <el-table-column label="已入库数量" prop="number_already_in" width="160" />
-              <el-table-column align="left" label="按钮组">
-                <template #default="scope">
-                  <el-button type="primary" link icon="edit" size="small" @click="addBusIngressFunc(props.row,scope.row)">入库
-                  </el-button>
-                </template>
-              </el-table-column>
             </el-table>
           </template>
         </el-table-column>
@@ -41,8 +35,9 @@
         </el-table-column>
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
-            <el-button type="primary" link icon="edit" size="small" @click="approveBusOrderFunc(scope.row)">审批
-            </el-button>
+            <el-button type="success" @click="approveFunc(scope.row,'success')">审批通过</el-button>
+            <el-button type="danger" @click="approveFunc(scope.row,'fail')">审批退回</el-button>
+            <el-button type="primary" @click="purchaseFunc(scope.row)">采购</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,53 +47,6 @@
           @size-change="handleSizeChange" />
       </div>
     </div>
-    <!-- 入库 -->
-    <el-dialog v-model="ingressDialogFormVisible" :before-close="ingressCloseDialog" title="入库详情">
-      <el-form :model="ingressFormData" label-position="right" ref="elFormRef" :rules="rule" label-width="120px">
-        <el-form-item label="耗材名称:" prop="name">
-          <el-input v-model="ingressFormData.goods_dict.name" :disabled="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="入库数量:" prop="ingressNumber">
-          <el-input v-model.number="ingressFormData.ingress_number" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="批号:" prop="batch">
-          <el-input v-model="ingressFormData.batch" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="有效日期:" prop="expiration_date">
-          <el-date-picker v-model="ingressFormData.expiration_date" type="date" :default-time="defaultTime" placeholder="请输入有效日期" />
-        </el-form-item>
-        
-        <el-form-item label="送货单号:" prop="invoice_number">
-          <el-input v-model="ingressFormData.delivery_number" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-
-        <el-form-item label="发票号:" prop="invoice_number">
-          <el-input v-model="ingressFormData.invoice_number" :clearable="true" placeholder="请输入" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button size="small" @click="ingressCloseDialog">取 消</el-button>
-          <el-button size="small" type="primary" @click="ingressEnterDialog">确 定</el-button>
-        </div>
-      </template>
-    </el-dialog>
-    <!-- 审批状态 -->
-    <el-dialog v-model="approveDialogFormVisible" :before-close="approveCloseDialog" title="申请表详情">
-      <el-form :model="approveFormData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
-        <el-form-item label="申请状态:" prop="state">
-          <el-select v-model="approveFormData.state" placeholder="请选择" :clearable="true">
-            <el-option v-for="(item, key) in applyStateOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button size="small" @click="approveCloseDialog">取 消</el-button>
-          <el-button size="small" type="primary" @click="approveEnterDialog">确 定</el-button>
-        </div>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -110,34 +58,27 @@ export default {
 
 <script setup>
 import {
-  approveBusOrder,
-  ingressBusOrder,
-  findBusOrder,
   getBusOrderList,
   getOrderDetails,
-  getOrderDetail
+  approve,
+  purchase
 } from '@/api/busOrder'
 
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, getBusDictFunc, formatDate, formatBoolean, filterDict } from '@/utils/format'
 import { ElMessage } from 'element-plus'
+import { async } from 'q';
 import { ref, reactive } from 'vue'
-
-// 审批提交的表单
-const approveFormData = ref({
+// 审批采购单所需的数据
+const approveData = ref({
   ID: 0,
   state: 0,
 })
-// 入库提交的表单
-const ingressFormData = ref({
+// 采购采购单所需的数据
+const purchaseData = ref({
+  ID: 0,
 })
 
-// 有效日期
-const value1 = ref('')
-
-// 验证规则
-const rule = reactive({
-})
 
 const elFormRef = ref()
 
@@ -203,81 +144,52 @@ const expandChange = async (row) => {
   }
 }
 
-// 更新行
-// 更新审批状态
-const approveBusOrderFunc = async (row) => {
-  const res = await findBusOrder({ ID: row.ID })
+// 审批订购单
+const approveFunc = async (row, type) => {
+  if (type === 'success') {
+    approveData.state = 2
+  } else if (type === 'fail') {
+    approveData.state = 3
+  }else{
+    approveData.state = 1
+  }
+  approveData.ID = row.ID
+  const res = await approve(approveData)
   if (res.code === 0) {
-    approveFormData.value = res.data.rebusOrder
-    approveDialogFormVisible.value = true
+    ElMessage({
+      type: 'success',
+      message: '订单状态更新成功'
+    })
+  } else {
+    ElMessage({
+      type: 'fail',
+      message: '订单状态更新失败'
+    })
   }
+  getTableData()
 }
 
-// 入库
-const addBusIngressFunc = async (pprow,prow) => {
-  const res = await getOrderDetail({
-    bus_order_id: pprow.ID,
-    goods_dict_id: prow.goods_dict.ID,
-  })
+// 采购订购单
+const purchaseFunc = async (row) => {
+  purchaseData.ID = row.ID
+  const res = await purchase(purchaseData)
   if (res.code === 0) {
-    ingressFormData.value = res.data.reOrderDetail
-
-    ingressDialogFormVisible.value = true
+    ElMessage({
+      type: 'success',
+      message: '状态更新成功'
+    })
+  } else {
+    ElMessage({
+      type: 'fail',
+      message: '状态更新失败'
+    })
   }
+  getTableData()
 }
 
 
-// 弹窗控制标记
-const approveDialogFormVisible = ref(false)
-const ingressDialogFormVisible = ref(false)
-
-// 审批：关闭弹窗
-const approveCloseDialog = () => {
-  approveDialogFormVisible.value = false
-  approveFormData.value = {
-    ID: 0,
-    state: 0,
-  }
-}
-
-// 入库：关闭弹窗
-const ingressCloseDialog = () => {
-  ingressDialogFormVisible.value = false
-}
-
-// 审批:弹窗确定
-const approveEnterDialog = async () => {
-  elFormRef.value?.validate(async (valid) => {
-    if (!valid) return
-    let res
-    res = await approveBusOrder(approveFormData.value)
-    if (res.code === 0) {
-      ElMessage({
-        type: 'success',
-        message: '审批完成'
-      })
-      approveCloseDialog()
-      getTableData()
-    }
-  })
-}
-
-// 入库：弹窗确认
-const ingressEnterDialog = async () => {
-  elFormRef.value?.validate(async (valid) => {
-    if (!valid) return
-    let res
-    res = await ingressBusOrder(ingressFormData.value)
-    if (res.code === 0) {
-      ElMessage({
-        type: 'success',
-        message: '入库成功'
-      })
-      ingressCloseDialog()
-    }
-  })
-}
 </script>
 
 <style>
+
 </style>

@@ -34,12 +34,20 @@ func (busOrderService *BusOrderService) DeleteBusOrderByIds(ids request.IdsReq) 
 	return err
 }
 
-// UpdateBusOrder 更新BusOrder记录
-// Author [piexlmax](https://github.com/piexlmax)
+// UpdateBusOrder 审批订购单
 func (busOrderService *BusOrderService) UpdateBusOrder(busOrder business.BusOrder, c *gin.Context) (err error) {
 	userID := utils.GetUserID(c) // 获取审批者ID
 	busOrder.ApproverID = &userID
-	err = global.GVA_DB.Save(&busOrder).Error
+	err = global.GVA_DB.Updates(&busOrder).Error
+	return err
+}
+
+// PurchaseBusOrder 采购订购单
+func (busOrderService *BusOrderService) PurchaseBusOrder(busOrder business.BusOrder, c *gin.Context) (err error) {
+	userID := utils.GetUserID(c) // 获取审批者ID
+	busOrder.ApproverID = &userID
+	busOrder.State = global.Purchasing
+	err = global.GVA_DB.Updates(&busOrder).Error
 	return err
 }
 

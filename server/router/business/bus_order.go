@@ -20,6 +20,7 @@ func (s *BusOrderRouter) InitBusOrderRouter(Router *gin.RouterGroup) {
 		busOrderRouter.DELETE("deleteBusOrderByIds", busOrderApi.DeleteBusOrderByIds) // 批量删除BusOrder
 		busOrderRouter.PUT("updateBusOrder", busOrderApi.UpdateBusOrder)              // 更新BusOrder
 		busOrderRouter.PUT("approveBusOrder", busOrderApi.ApproveBusOrder)            // 审批BusOrder
+		busOrderRouter.PUT("purchaseBusOrder", busOrderApi.PurchaseBusOrder)          // 更新BusOrder的状态为采购
 		busOrderRouter.PUT("ingressBusOrder", busOrderApi.IngressBusOrder)            // 审批BusOrder
 	}
 	{

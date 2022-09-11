@@ -4,7 +4,23 @@
             <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" />
-                <el-table-column align="left" label="组别名称" prop="name" width="140" />
+                <el-table-column align="left" label="申请单ID" prop="ID" width="120" />
+                <el-table-column align="left" label="申请单提交日期" width="180">
+                    <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
+                </el-table-column>
+                <el-table-column align="left" label="耗材名称"/>
+                <el-table-column align="left" label="规格"/>
+                <el-table-column align="left" label="申请数量"/>
+                <el-table-column align="left" label="已到数量"/>
+                <el-table-column align="left" label="库存点" prop="name" width="140" />
+                <el-table-column align="left" label="申请人" prop="applicant.nickName" width="120" />
+                <el-table-column align="left" label="申请审批日期" width="180">
+                    <template #default="scope">{{ formatDate(scope.row.UpdatedAt) }}</template>
+                </el-table-column>
+                <el-table-column align="left" label="审批人" prop="approver.nickName" width="120" />
+                <el-table-column align="left" label="申请状态" prop="state" width="120">
+                    <template #default="scope">{{ filterDict(scope.row.state, applyStateOptions) }}</template>
+                </el-table-column>
             </el-table>
             <div class="gva-pagination">
                 <el-pagination layout="total, sizes, prev, pager, next, jumper" :current-page="page"
@@ -14,8 +30,9 @@
         </div>
         <!-- 入库详情 -->
         <div class="layout-container-demo">
-            <el-container style="height: 500px">
+            <el-container>
                 <el-aside width="200px">
+                    <el-input v-model="input" placeholder="Please input" disabled />
                 </el-aside>
                 <el-main>Main</el-main>
             </el-container>

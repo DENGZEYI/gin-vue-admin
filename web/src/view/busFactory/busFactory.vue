@@ -157,6 +157,7 @@ const multipleSelection = ref([])
 // 多选
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
+  console.log(multipleSelection.value)
 }
 
 // 删除行

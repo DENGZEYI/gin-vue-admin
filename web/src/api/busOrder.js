@@ -32,7 +32,7 @@ export const deleteBusOrder = (data) => {
   })
 }
 
-export const getOrderDetails = (params)=>{
+export const getOrderDetails = (params) => {
   return service({
     url: '/busOrder/getOrderDetails',
     method: 'get',
@@ -71,8 +71,7 @@ export const updateBusOrder = (data) => {
     data
   })
 }
-
-export const approveBusOrder = (data)=>{
+export const approve = (data) => {
   return service({
     url: '/busOrder/approveBusOrder',
     method: 'put',
@@ -80,7 +79,15 @@ export const approveBusOrder = (data)=>{
   })
 }
 
-export const ingressBusOrder = (data)=>{
+export const purchase = (data) => {
+  return service({
+    url: '/busOrder/purchaseBusOrder',
+    method: 'put',
+    data
+  })
+}
+
+export const ingressBusOrder = (data) => {
   return service({
     url: '/busOrder/ingressBusOrder',
     method: 'put',
@@ -104,7 +111,7 @@ export const findBusOrder = (params) => {
   })
 }
 
-export const findBusOrderDetails = (params) =>{
+export const findBusOrderDetails = (params) => {
   return service({
     url: '/busOrder/findBusOrderDetails',
     method: 'get',
@@ -112,7 +119,7 @@ export const findBusOrderDetails = (params) =>{
   })
 }
 
-export const getOrderDetail = (params)=>{
+export const getOrderDetail = (params) => {
   return service({
     url: '/busOrder/getOrderDetail',
     method: 'get',
