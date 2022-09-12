@@ -83,8 +83,8 @@ func (BusIngressDetail) TableName() string {
 type BusIngress struct {
 	global.GVA_MODEL
 	// 入库人
-	IngressMan        system.SysUser     `gorm:"foreignKey:IngressManID"`
-	IngressManID      *uint              `json:"bus_ingress_man_id" form:"bus_ingress_man_id" `
+	IngressMan        system.SysUser     `gorm:"foreignKey:IngressManID" json:"ingress_man" form:"ingress_man"`
+	IngressManID      *uint              `json:"ingress_man_id" form:"ingress_man_id" `
 	BusOrderID        *uint              `json:"bus_order_id" form:"bus_order_id"`
 	BusIngressDetails []BusIngressDetail `gorm:"foreignKey:BusIngressID" json:"bus_ingress_details" form:"bus_ingress_details"`
 }

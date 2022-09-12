@@ -159,7 +159,7 @@ func (busOrderService *BusOrderService) GetBusStateDict() (list []global.ApplySt
 	var applyStateDict []global.ApplyState
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Processing,
-		Name: "采购申请中",
+		Name: "已申请",
 	})
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Pass,
@@ -167,11 +167,11 @@ func (busOrderService *BusOrderService) GetBusStateDict() (list []global.ApplySt
 	})
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Fail,
-		Name: "审批不通过",
+		Name: "审批退回",
 	})
 	applyStateDict = append(applyStateDict, global.ApplyState{
 		ID:   global.Purchasing,
-		Name: "采购",
+		Name: "已采购",
 	})
 	return applyStateDict, nil
 }

@@ -37,7 +37,7 @@
         <el-table-column align="left" label="申请状态" prop="state" width="120">
           <template #default="scope">{{ filterDict(scope.row.state, applyStateOptions) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="审批按钮" width="300">
+        <el-table-column align="left" fixed="right" label="审批按钮" width="300">
           <template #default="scope">
             <el-button type="success" :disabled="scope.row.state !== orderOptions['PROCESSING']"
               @click="approveFunc(scope.row,'success')">审批通过</el-button>
@@ -45,7 +45,7 @@
               @click="approveFunc(scope.row,'fail')">审批退回</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="采购按钮" width="300">
+        <el-table-column align="left" fixed="right" label="采购按钮" width="100">
           <template #default="scope">
             <el-button type="primary" :disabled="scope.row.state !== orderOptions['PASS']"
               @click="purchaseFunc(scope.row)">采购</el-button>
@@ -54,7 +54,7 @@
       </el-table>
       <div class="gva-pagination">
         <el-pagination layout="total, sizes, prev, pager, next, jumper" :current-page="page" :page-size="pageSize"
-          :page-sizes="[10, 30, 50, 100]" :total="total" @current-change="handleCurrentChange"
+          :page-sizes="[5, 10, 30, 50, 100]" :total="total" @current-change="handleCurrentChange"
           @size-change="handleSizeChange" />
       </div>
     </div>
