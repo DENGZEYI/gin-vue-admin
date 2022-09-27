@@ -21,7 +21,6 @@ func (s *BusOrderRouter) InitBusOrderRouter(Router *gin.RouterGroup) {
 		busOrderRouter.PUT("updateBusOrder", busOrderApi.UpdateBusOrder)              // 更新BusOrder
 		busOrderRouter.PUT("approveBusOrder", busOrderApi.ApproveBusOrder)            // 审批BusOrder
 		busOrderRouter.PUT("purchaseBusOrder", busOrderApi.PurchaseBusOrder)          // 更新BusOrder的状态为采购
-		busOrderRouter.PUT("ingressBusOrder", busOrderApi.IngressBusOrder)            // 审批BusOrder
 	}
 	{
 		busOrderRouterWithoutRecord.GET("getOrderDetail", busOrderApi.GetOrderDetail)   // 根据ID获取BusOrderDetail

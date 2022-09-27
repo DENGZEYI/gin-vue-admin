@@ -5,6 +5,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business/reply"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/clause"
 )
 
@@ -40,6 +42,7 @@ func (busIngressService *BusIngressService) GetBusIngressInfoList(info request.B
 			var rep = reply.BusIngressRep{
 				BusOrderID:    &(orderList[i].ID),
 				GoodsName:     orderList[i].BusOrderDetails[j].GoodsDict.Name,
+				GoodsDictID:   orderList[i].BusOrderDetails[j].GoodsDict.ID,
 				Specification: orderList[i].BusOrderDetails[j].GoodsDict.Specification,
 				ApplyNumber:   orderList[i].BusOrderDetails[j].Number,
 				ArrivalNumber: uint(arrivalNum),
@@ -64,4 +67,47 @@ func (busIngressService *BusIngressService) GetBusIngressInfoList(info request.B
 	}
 	repList = repList[offset:endIdx]
 	return repList, total, err
+}
+
+// IngressBusOrder 入库
+func (busIngressService *BusIngressService) IngressBusOrder(ingressReq request.BusIngressReq, c *gin.Context) (err error) {
+	// 创建BusIngress结构体
+	userID := utils.GetUserID(c) // 获取入库者ID
+	var ingress business.BusIngress
+	ingress.IngressManID = &userID
+	ingress.BusOrderID = ingressReq.BusOrderID
+	var ingressDetailSlice []business.BusIngressDetail
+	for i := 0; i < len(ingressReq.IngressDetails); i++ {
+		ingressDetail := business.BusIngressDetail{
+			IngressNumber: ingressReq.IngressDetails[i].IngressNumber,
+			GoodsDictID:   ingressReq.IngressDetails[i].GoodsDictID,
+		}
+		ingressDetailSlice = append(ingressDetailSlice, ingressDetail)
+	}
+	ingress.BusIngressDetails = ingressDetailSlice
+	err = global.GVA_DB.Create(&ingress).Error
+	if err != nil {
+		return err
+	}
+
+	// 创建BusGoods结构体
+	var goodsSlice []business.BusGoods
+	for i := 0; i < len(ingressReq.IngressDetails); i++ {
+		for j := 0; j < int(ingressReq.IngressDetails[i].IngressNumber); j++ {
+			goods := business.BusGoods{
+				BusOrderID:   ingressReq.BusOrderID,
+				BusIngressID: &(ingress.ID),
+				BusEgressID:  nil,
+				GoodsDictID:  ingressReq.IngressDetails[i].GoodsDictID,
+				// TODO 序列号
+				SerialNumber:   0,
+				Batch:          ingressReq.IngressDetails[i].Batch,
+				DeliveryNumber: ingressReq.DeliveryNumber,
+				ExpirationDate: ingressReq.IngressDetails[i].ExpirationDate,
+			}
+			goodsSlice = append(goodsSlice, goods)
+		}
+	}
+	err = global.GVA_DB.Create(&goodsSlice).Error
+	return err
 }

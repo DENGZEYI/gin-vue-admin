@@ -13,6 +13,20 @@ import (
 type BusGoodsDictService struct {
 }
 
+//GetGoodsDictID 根据GoodsName查询GoodsDictID
+func (BusGoodsDictService *BusGoodsDictService) GetGoodsDictID(name string) (ID int, err error) {
+	// 创建db
+	db := global.GVA_DB.Model(&business.BusGoodsDict{})
+	var goodsDicts []business.BusGoodsDict
+	result := db.Where("name = ?", name).Find(&goodsDicts)
+	if result.RowsAffected != 1 {
+		// 查询到多个同名耗材字典
+		return -1, result.Error
+	}
+	// 只查询到唯一一个耗材字典
+	return int(goodsDicts[0].ID), result.Error
+}
+
 // CreateBusGoodsDict 创建BusGoodsDict记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (BusGoodsDictService *BusGoodsDictService) CreateBusGoodsDict(BusGoodsDict business.BusGoodsDict) (err error) {

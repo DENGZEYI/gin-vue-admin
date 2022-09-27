@@ -120,18 +120,6 @@ func (busOrderApi *BusOrderApi) PurchaseBusOrder(c *gin.Context) {
 	}
 }
 
-// IngressBusOrder 入库
-func (busOrderApi *BusOrderApi) IngressBusOrder(c *gin.Context) {
-	var busIngressReq businessReq.BusIngressReq
-	_ = c.ShouldBindJSON(&busIngressReq)
-	if err := busOrderService.IngressBusOrder(busIngressReq, c); err != nil {
-		global.GVA_LOG.Error("更新失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	} else {
-		response.OkWithMessage("更新成功", c)
-	}
-}
-
 // FindBusOrder 用id查询BusOrder
 // @Tags BusOrder
 // @Summary 用id查询BusOrder

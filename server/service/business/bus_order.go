@@ -54,44 +54,6 @@ func (busOrderService *BusOrderService) PurchaseBusOrder(busOrder business.BusOr
 	return err
 }
 
-// IngressBusOrder 入库
-// Author [piexlmax](https://github.com/piexlmax)
-func (busOrderService *BusOrderService) IngressBusOrder(ingressReq businessReq.BusIngressReq, c *gin.Context) (err error) {
-	// 创建BusIngress结构体
-	userID := utils.GetUserID(c) // 获取入库者ID
-	var ingress business.BusIngress
-	ingress.IngressManID = &userID
-	ingress.BusOrderID = ingressReq.BusOrderID
-
-	var ingressDetail business.BusIngressDetail
-	ingressDetail.GoodsDictID = ingressReq.GoodsDictID
-	ingressDetail.IngressNumber = ingressReq.IngressNumber
-
-	var ingressDetails []business.BusIngressDetail
-	ingressDetails = append(ingressDetails, ingressDetail)
-	ingress.BusIngressDetails = ingressDetails
-
-	err = global.GVA_DB.Create(&ingress).Error
-	// 创建BusGoods结构体
-	goods := business.BusGoods{
-		BusOrderID:     ingressReq.BusOrderID,
-		BusIngressID:   &(ingress.ID),
-		BusEgressID:    nil,
-		GoodsDictID:    ingressReq.GoodsDictID,
-		SerialNumber:   0,
-		Batch:          ingressReq.Batch,
-		DeliveryNumber: ingressReq.DeliveryNumber,
-		ExpirationDate: ingressReq.ExpirationDate,
-		InvoiceNumber:  ingressReq.InvoiceNumber,
-	}
-	var goodsSlice []business.BusGoods
-	for i := 0; i < int(ingressDetail.IngressNumber); i++ {
-		goodsSlice = append(goodsSlice, goods)
-	}
-	err = global.GVA_DB.Create(&goodsSlice).Error
-	return err
-}
-
 // GetBusOrder 根据id获取BusOrder记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (busOrderService *BusOrderService) GetBusOrder(id uint) (busOrder business.BusOrder, err error) {

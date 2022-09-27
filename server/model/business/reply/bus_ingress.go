@@ -5,6 +5,7 @@ import "time"
 type BusIngressRep struct {
 	BusOrderID    *uint     `json:"ID" gorm:"column:id"`
 	GoodsName     string    `json:"goods_name"`
+	GoodsDictID   uint      `json:"goods_dict_id"`
 	Specification string    `json:"specification"`
 	ApplyNumber   uint      `json:"apply_number"`
 	ArrivalNumber uint      `json:"arrival_number"`

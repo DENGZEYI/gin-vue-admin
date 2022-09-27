@@ -35,3 +35,16 @@ func (busIngressApi *BusIngressApi) GetBusIngressList(c *gin.Context) {
 		}, "获取成功", c)
 	}
 }
+
+// Ingress 入库
+func (busIngressApi *BusIngressApi) Ingress(c *gin.Context) {
+	var busIngressReq businessReq.BusIngressReq
+	// TODO 只绑定到了一个
+	_ = c.ShouldBindJSON(&busIngressReq)
+	if err := busIngressService.IngressBusOrder(busIngressReq, c); err != nil {
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+	} else {
+		response.OkWithMessage("更新成功", c)
+	}
+}

@@ -23,7 +23,7 @@
                 </el-table-column>
                 <el-table-column align="left" label="审批人" prop="approver_name" width="120" />
                 <el-table-column align="left" label="采购人" prop="purchaser_name" width="120" />
-                <el-table-column align="left" fixed="right" label="入库按钮" width="100">
+                <el-table-column align="left" fixed="right" label="选择入库耗材" width="120">
                     <template #default="scope">
                         <el-button type="primary" @click="addFunc(scope.row)">添加</el-button>
                     </template>
@@ -54,19 +54,42 @@
                                 style="width: 100%" />
                         </el-form-item>
                         <el-form-item label="入库日期">
-                            <el-date-picker v-model="ingressFormData.IngressDate" type="date" style="width: 100%" />
+                            <el-date-picker v-model="ingressFormData.ingress_date" type="date" style="width: 100%" />
+                        </el-form-item>
+                        <el-form-item label="入库按钮">
+                            <el-button type="primary" @click="ingressFunc">入库</el-button>
                         </el-form-item>
                     </el-form>
                 </el-aside>
                 <el-main>
                     <div class="gva-table-box">
-                        <el-table :data="ingressFormData.IngressDetails">
+                        <el-table :data="ingressFormData.ingress_details">
                             <el-table-column align="left" label="耗材名称" prop="goods_name" width="120" />
                             <el-table-column align="left" label="规格" prop="specification" />
-                            <el-table-column align="left" label="批号" prop="batch" />
-                            <el-table-column align="left" label="有效期" prop="expiration_date">
+                            <el-table-column align="left" label="批号" prop="batch">
+                                <template #default="scope">
+                                    <el-form-item>
+                                        <el-input ref="input" size='mini' v-model="scope.row.batch" placeholder="请输入批号">
+                                        </el-input>
+                                    </el-form-item>
+                                </template>
                             </el-table-column>
-                            <el-table-column align="left" label="入库数量" prop="ingress_number" />
+                            <el-table-column align="left" label="有效期" prop="expiration_date">
+                                <template #default="scope">
+                                    <el-form-item>
+                                        <el-date-picker :clearable="false" v-model="scope.row.expiration_date"
+                                            type="date" placeholder="请输入有效期">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column align="left" label="入库数量" prop="ingress_number" >
+                                <template #default="scope">
+                                    <el-form-item>
+                                        <el-input type="number" size='mini' v-model.number="scope.row.ingress_number" placeholder="请输入入库数量"/>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
                         </el-table>
                     </div>
                 </el-main>
@@ -83,7 +106,8 @@ export default {
 
 <script setup>
 import {
-    getBusIngressList
+    getBusIngressList,
+    ingress
 } from '@/api/busIngress'
 
 
@@ -127,19 +151,19 @@ getTableData()
 // ============== 表格控制部分结束 ===============
 
 const ingressFormData = ref({
-    OrderID: 0,
+    order_id: 0,
     group_name: "",
     delivery_number: "",
-    IngressDate: new Date(),
-    IngressDetails: ref([])
+    ingress_date: new Date(),
+    ingress_details: []
 })
 
 // 添加耗材以完成入库操作
 const addFunc = async (row) => {
-    if (ingressFormData.value.OrderID === 0) {
-        ingressFormData.value.OrderID = row.ID
+    if (ingressFormData.value.order_id === 0) {
+        ingressFormData.value.order_id = row.ID
     }
-    if (ingressFormData.value.OrderID !== row.ID) {
+    if (ingressFormData.value.order_id !== row.ID) {
         ElMessage({
             type: 'fail',
             message: '不允许添加属于不同申请单的耗材'
@@ -154,13 +178,26 @@ const addFunc = async (row) => {
         expiration_date: "",
         ingress_number: 0,
     }
-    ingressFormData.value.IngressDetails.push(goods)
+    ingressFormData.value.ingress_details.push(goods)
     ElMessage({
         type: 'success',
         message: '添加成功'
     })
-    console.log(ingressFormData.value.IngressDetails)
-
+}
+// 入库
+const ingressFunc = async () => {
+    const rst = await ingress(ingressFormData.value)
+    if (table.code === 0) {
+        ElMessage({
+            type: 'success',
+            message: '入库成功'
+        })
+    }else{
+        ElMessage({
+            type: 'fail',
+            message: '入库失败'
+        })
+    }
 }
 
 // 多选数据

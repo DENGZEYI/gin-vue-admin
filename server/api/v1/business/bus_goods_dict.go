@@ -167,12 +167,6 @@ func (BusGoodsDictApi *BusGoodsDictApi) GetBusGoodsDictList(c *gin.Context) {
 }
 
 // ApplyBusGoodsByIds 申请Goods
-// @Tags BusGoodsDict
-// @Summary 分页获取BusGoodsDict列表
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Param data query businessReq.BusGoodsDictSearch true "分页获取BusGoodsDict列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"申请成功"}"
 // @Router /BusGoodsDict/applyGoodsByIds [post]
 func (BusGoodsDictApi *BusGoodsDictApi) ApplyBusGoodsByIds(c *gin.Context) {
