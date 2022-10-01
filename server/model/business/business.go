@@ -3,6 +3,7 @@ package business
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
+	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"time"
 )
@@ -44,7 +45,7 @@ func (BusOrder) TableName() string {
 // BusGoodsDict 结构体
 // 记录了耗材的基本信息
 type BusGoodsDict struct {
-	ID            uint            `gorm:"primarykey"` // 主键ID
+	ID            *uint           `gorm:"primarykey"` // 主键ID
 	CreatedAt     time.Time       // 创建时间
 	UpdatedAt     time.Time       // 更新时间
 	DeletedAt     gorm.DeletedAt  `gorm:"index" json:"-"` // 删除时间
@@ -171,7 +172,7 @@ type BusGoods struct {
 	GoodsDict   BusGoodsDict `gorm:"foreignKey:GoodsDictID" json:"goods_dict" form:"goods_dict"`
 	GoodsDictID *uint        `json:"goods_dict_id" form:"goods_dict_id" `
 
-	SerialNumber   uint      `json:"serial_number" form:"serial_number" `     // 用于打印的序列号
+	SerialNumber   uuid.UUID `json:"serial_number" form:"serial_number" `     // 用于打印的序列号
 	Batch          string    `json:"batch" form:"batch" `                     // 批号
 	DeliveryNumber string    `json:"delivery_number" form:"delivery_number" ` //送货单号
 	ExpirationDate time.Time `json:"expiration_date" form:"expiration_date" ` // 有效期

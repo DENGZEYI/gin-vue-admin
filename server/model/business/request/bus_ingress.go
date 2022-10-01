@@ -23,5 +23,5 @@ type BusIngressReq struct {
 	//InvoiceNumber  string    `json:"invoice_number" form:"invoice_number"`    // 发票号
 	DeliveryNumber string          `json:"delivery_number" form:"delivery_number" ` //送货单号
 	IngressDate    time.Time       `json:"ingress_date" form:"ingress_date"`        // 入库时间
-	IngressDetails []IngressDetail `json:"ingress_details"`
+	IngressDetails []IngressDetail `json:"ingress_details" form:"ingress_details"`
 }

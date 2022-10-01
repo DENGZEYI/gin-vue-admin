@@ -7,6 +7,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm/clause"
 )
 
@@ -34,6 +35,7 @@ func (busIngressService *BusIngressService) GetBusIngressInfoList(info request.B
 			global.GVA_DB.Where("bus_order_id = ?", orderID).Preload("BusIngressDetails").Find(&ingresses)
 			for j := 0; j < len(ingresses); j++ {
 				for k := 0; k < len(ingresses[j].BusIngressDetails); k++ {
+					// 因为是指针，所以需要取内存中所存的数再做判断
 					if *ingresses[j].BusIngressDetails[k].GoodsDictID == *goodsDictID {
 						arrivalNum += int(ingresses[j].BusIngressDetails[k].IngressNumber)
 					}
@@ -100,7 +102,7 @@ func (busIngressService *BusIngressService) IngressBusOrder(ingressReq request.B
 				BusEgressID:  nil,
 				GoodsDictID:  ingressReq.IngressDetails[i].GoodsDictID,
 				// TODO 序列号
-				SerialNumber:   0,
+				SerialNumber:   uuid.NewV4(),
 				Batch:          ingressReq.IngressDetails[i].Batch,
 				DeliveryNumber: ingressReq.DeliveryNumber,
 				ExpirationDate: ingressReq.IngressDetails[i].ExpirationDate,
