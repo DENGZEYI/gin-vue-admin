@@ -91,7 +91,7 @@ const rule = reactive({
   name: [{
     required: true,
     message: '',
-    trigger: ['input', 'blur'],
+    trigger: ['blur'],
   }],
 })
 
@@ -250,7 +250,7 @@ const closeDialog = () => {
 }
 // 弹窗确定
 const enterDialog = async () => {
-  elFormRef.value?.validate(async (valid) => {
+  elFormRef.value.validate(async (valid) => {
     if (!valid) return
     let res
     switch (type.value) {

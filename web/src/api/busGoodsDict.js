@@ -48,9 +48,9 @@ export const deleteBusGoodsDictByIds = (data) => {
   })
 }
 
-export const applyBusGoodsByIds = (data) => {
+export const applyBusGoods = (data) => {
   return service({
-    url: '/busGoodsDict/applyBusGoodsByIds',
+    url: '/busGoodsDict/applyBusGoods',
     method: 'post',
     data
   })

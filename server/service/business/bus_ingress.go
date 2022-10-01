@@ -22,7 +22,7 @@ func (busIngressService *BusIngressService) GetBusIngressInfoList(info request.B
 	// 创建db
 	db := global.GVA_DB.Model(&business.BusOrder{})
 	orderStr := "id desc" //降序排列
-	db.Order(orderStr).Preload("BusOrderDetails.GoodsDict.Provider").Preload("BusOrderDetails.GoodsDict.Group").Preload(clause.Associations).Find(&orderList)
+	db.Order(orderStr).Where("state >= ?", global.Purchasing).Preload("BusOrderDetails.GoodsDict.Provider").Preload("BusOrderDetails.GoodsDict.Group").Preload(clause.Associations).Find(&orderList)
 	// 填写返回的数据
 	for i := 0; i < len(orderList); i++ {
 		for j := 0; j < len(orderList[i].BusOrderDetails); j++ {
@@ -97,11 +97,10 @@ func (busIngressService *BusIngressService) IngressBusOrder(ingressReq request.B
 	for i := 0; i < len(ingressReq.IngressDetails); i++ {
 		for j := 0; j < int(ingressReq.IngressDetails[i].IngressNumber); j++ {
 			goods := business.BusGoods{
-				BusOrderID:   ingressReq.BusOrderID,
-				BusIngressID: &(ingress.ID),
-				BusEgressID:  nil,
-				GoodsDictID:  ingressReq.IngressDetails[i].GoodsDictID,
-				// TODO 序列号
+				BusOrderID:     ingressReq.BusOrderID,
+				BusIngressID:   &(ingress.ID),
+				BusEgressID:    nil,
+				GoodsDictID:    ingressReq.IngressDetails[i].GoodsDictID,
 				SerialNumber:   uuid.NewV4(),
 				Batch:          ingressReq.IngressDetails[i].Batch,
 				DeliveryNumber: ingressReq.DeliveryNumber,

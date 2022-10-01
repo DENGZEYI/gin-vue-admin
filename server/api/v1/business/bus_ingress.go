@@ -40,10 +40,15 @@ func (busIngressApi *BusIngressApi) GetBusIngressList(c *gin.Context) {
 func (busIngressApi *BusIngressApi) Ingress(c *gin.Context) {
 	var busIngressReq businessReq.BusIngressReq
 	_ = c.ShouldBindJSON(&busIngressReq)
+	if len(busIngressReq.IngressDetails) == 0 {
+		// 如果没有输入入库耗材，则直接返回
+		response.FailWithMessage("入库失败", c)
+		return
+	}
 	if err := busIngressService.IngressBusOrder(busIngressReq, c); err != nil {
-		global.GVA_LOG.Error("更新失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
+		global.GVA_LOG.Error("入库失败!", zap.Error(err))
+		response.FailWithMessage("入库失败", c)
 	} else {
-		response.OkWithMessage("更新成功", c)
+		response.OkWithMessage("入库成功", c)
 	}
 }

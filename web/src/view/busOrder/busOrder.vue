@@ -9,13 +9,15 @@
       </el-form>
     </div>
     <div class="gva-table-box">
-      <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
+      <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
         @expand-change="expandChange">
         <el-table-column label="详情" type="expand" width="120">
           <template #default="props">
             <h3>采购申请单详情</h3>
             <el-table :data="props.row.details">
               <el-table-column label="耗材名称" prop="goods_dict.name" width="120" />
+              <el-table-column align="left" label="单位" prop="goods_dict.unit" width="120" />
+              <el-table-column align="left" label="耗材规格" prop="goods_dict.specification" width="200" />
               <el-table-column label="申请数量" prop="number" width="120" />
               <el-table-column label="已入库数量" prop="number_already_in" width="160" />
             </el-table>
@@ -171,12 +173,12 @@ const approveFunc = async (row, type) => {
   if (res.code === 0) {
     ElMessage({
       type: 'success',
-      message: '订单状态更新成功'
+      message: '申请单状态更新成功'
     })
   } else {
     ElMessage({
       type: 'fail',
-      message: '订单状态更新失败'
+      message: '申请状态更新失败'
     })
   }
   getTableData()
@@ -189,12 +191,12 @@ const purchaseFunc = async (row) => {
   if (res.code === 0) {
     ElMessage({
       type: 'success',
-      message: '状态更新成功'
+      message: '申请单状态更新成功'
     })
   } else {
     ElMessage({
       type: 'fail',
-      message: '状态更新失败'
+      message: '申请单状态更新失败'
     })
   }
   getTableData()

@@ -42,7 +42,7 @@
           </template>
         </el-popover>
       </div>
-      <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
+      <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
         @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="耗材ID" prop="ID" width="120" />
@@ -53,6 +53,7 @@
         <!-- 
         <el-table-column align="left" label="价格" prop="price" width="120" />
         -->
+        <el-table-column align="left" label="单位" prop="unit" width="120" />
         <el-table-column align="left" label="规格" prop="specification" width="120" />
         <!-- 
         <el-table-column align="left" label="合同代码" prop="contract_code" width="120" />
@@ -68,7 +69,7 @@
             <el-button type="primary" link icon="edit" size="small" class="table-button"
               @click="updatebusGoodsDictFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" size="small" @click="deleteRow(scope.row)">删除</el-button>
-            <el-button type="primary" link icon="DocumentAdd" size="small" @click="addRow(scope.row)">添加</el-button>
+            <el-button type="primary" link icon="DocumentAdd" size="small" @click="addRow(scope.row)">申请耗材</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,43 +80,50 @@
       </div>
     </div>
 
+    <el-divider>
+      <span>耗材申请单</span>
+    </el-divider>
+
     <!-- 申请Goods表格 -->
-    <div class="gva-table-box">
-      <!-- 表格按钮 -->
-      <div class="gva-btn-list">
-        <el-popover v-model:visible="selectedDataSubVisible" placement="top" width="160">
-          <p>确定要提交申请吗？</p>
-          <div style="text-align: right; margin-top: 8px;">
-            <el-button size="small" type="primary" link @click="selectedDataSubVisible = false">取消</el-button>
-            <el-button size="small" type="primary" @click="onSubmitSelectedData">确定</el-button>
-          </div>
-          <template #reference>
-            <el-button icon="checked" size="small" style="margin-left: 10px;" :disabled="!selectedData.length"
-              @click="selectedDataSubVisible = true">提交申请</el-button>
-          </template>
-        </el-popover>
+    <el-form :inline="true" :model="applyFormData" ref="applyFormRef" label-width="80px" :rules="rules">
+      <div class="gva-table-box">
+        <!-- 表格按钮 -->
+        <div class="gva-btn-list">
+          <el-popover v-model:visible="applyBtnVisible" placement="top" width="160">
+            <p>确定要提交申请吗？</p>
+            <div style="text-align: right; margin-top: 8px;">
+              <el-button size="small" type="primary" link @click="applyBtnVisible = false">取消</el-button>
+              <el-button size="small" type="primary" @click="applyFunc">确定</el-button>
+            </div>
+            <template #reference>
+              <el-button icon="checked" size="small" style="margin-left: 10px;"
+                :disabled="!applyFormData.apply_details.length" @click="applyBtnVisible = true">提交申请</el-button>
+            </template>
+          </el-popover>
+        </div>
+        <!-- 表格主体 -->
+        <el-table style="width: 100%" tooltip-effect="dark" :data="applyFormData.apply_details" row-key="ID">
+          <el-table-column align="left" label="耗材名称" prop="goods_dict_name" width="200" />
+          <el-table-column align="left" label="组别" prop="group" width="200" />
+          <el-table-column align="left" label="生产商" prop="factory" width="200" />
+          <el-table-column align="left" label="单位" prop="unit" width="120" />
+          <el-table-column align="left" label="耗材规格" prop="specification" width="200" />
+          <el-table-column align="left" label="申请数量" prop="apply_number" width="200">
+            <template #default="scope">
+              <el-form-item label=" " :prop="'apply_details.' + scope.$index + '.apply_number'"
+                :rules='rules.apply_number'>
+                <el-input onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')" v-model.number="scope.row.apply_number"
+                  placeholder="请输入入库数量" />
+              </el-form-item>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
-      <!-- 表格主体 -->
-      <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="selectedData" row-key="ID">
-        <el-table-column align="left" label="耗材名称" prop="name" width="120" />
-        <el-table-column align="left" label="数量" prop="number" width="120">
-          <template #default="scope">
-            <input type="number" v-model="scope.row.number" v-show="scope.row.iseditor" />
-            <span v-show="!scope.row.iseditor">{{ scope.row.number }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="操作">
-          <template #default="scope">
-            <el-button type="warning" @click="edit(scope.row, scope)">编辑</el-button>
-            <el-button type="danger" @click="save(scope.row)">保存</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+    </el-form>
 
     <!-- Goods表格弹窗 -->
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" title="弹窗操作">
-      <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="120px">
+      <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rules" label-width="120px">
         <el-form-item label="耗材名称:" prop="name">
           <el-input v-model="formData.name" :clearable="true" placeholder="请输入" />
         </el-form-item>
@@ -128,11 +136,11 @@
           <el-select v-model="formData.factory_id" placeholder="请选择" :clearable="true">
             <el-option v-for="(item, key) in factoryOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
-        <el-form-item label="供应商:" prop="provider_id">
-          <el-select v-model="formData.provider_id" placeholder="请选择" :clearable="true">
-            <el-option v-for="(item, key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
+          <el-form-item label="供应商:" prop="provider_id">
+            <el-select v-model="formData.provider_id" placeholder="请选择" :clearable="true">
+              <el-option v-for="(item, key) in providerOptions" :key="key" :label="item.label" :value="item.value" />
+            </el-select>
+          </el-form-item>
         </el-form-item>
         <el-form-item label="规格:" prop="specification">
           <el-input v-model="formData.specification" :clearable="true" placeholder="请输入" />
@@ -169,11 +177,12 @@ import {
   updateBusGoodsDict,
   findBusGoodsDict,
   getBusGoodsDictList,
-  applyBusGoodsByIds
+  applyBusGoods
 } from '@/api/busGoodsDict'
 
 // 全量引入格式化工具 请按需保留
 import { formatDate, getBusDictFunc, formatBoolean, filterDict } from '@/utils/format'
+import { isDeclareOpaqueType } from '@babel/types';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
@@ -189,11 +198,16 @@ const formData = ref({
 })
 
 // 验证规则
-const rule = reactive({
+const rules = reactive({
   name: [{
     required: true,
-    message: '',
-    trigger: ['input', 'blur'],
+    message: '必填项',
+    trigger: ['blur'],
+  }],
+  apply_number: [{
+    required: true,
+    message: '必填项',
+    trigger: ['blur'],
   }],
 })
 
@@ -205,7 +219,6 @@ const page = ref(1)
 const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
-const selectedData = ref([])
 const searchInfo = ref({})
 
 // 重置
@@ -278,44 +291,66 @@ const deleteRow = (row) => {
   })
 }
 
-// selectedData提交标记
-const selectedDataSubVisible = ref(false)
+const applyBtnVisible = ref(false)
+const applyFormRef = ref()
+const applyFormData = ref({
+  apply_details: []
+})
 
-// 将所选行的内容添加到selectedData中
-const addRow = (row) => {
-  var selectedFlag = 0 //标识当前元素是否已经存在于字典中
-  selectedData.value.forEach(element => {
-    if (row.ID === element.ID) {
-      selectedFlag = 1
+// 判断是否重复添加需要申请的耗材
+const isRepeat = (row) => {
+  for (var i = 0; i < applyFormData.value.apply_details.length; i++) {
+    if (applyFormData.value.apply_details[i].goods_dict_id == row.ID) {
+      return true
     }
-  });
-  if (selectedFlag == 1) {
+  }
+  return false
+}
+
+// 添加耗材以完成申请操作
+const addRow = async (row) => {
+  // 避免重复添加
+  if (isRepeat(row)) {
+    ElMessage({
+    type: 'warning',
+    message: '不允许重复添加'
+  })
     return
   }
-  selectedData.value.push({ ID: row.ID, name: row.name, number: 0, iseditor: false })
-}
-
-// 修改selectedData中的数量
-const edit = (row) => {
-  row.iseditor = true;
-}
-const save = (row) => {
-  row.iseditor = false;
-}
-
-const onSubmitSelectedData = async () => {
-  const ids = []
-  selectedData.value && selectedData.value.map(item => {
-    ids.push({ ID: item.ID, number: item.number })
-  })
-  const res = await applyBusGoodsByIds({ ids })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '成功提交申请'
-    })
-    selectedDataSubVisible.value = false
+  const applly_detail = {
+    goods_dict_name: row.name,
+    goods_dict_id: row.ID,
+    unit:row.unit,
+    specification: row.specification,
+    group:row.group.name,
+    factory: row.factory.name,
+    apply_number: row.apply_number
   }
+  applyFormData.value.apply_details.push(applly_detail)
+  ElMessage({
+    type: 'success',
+    message: '添加成功'
+  })
+}
+
+// 提交申请
+const applyFunc = async () => {
+  applyFormRef.value.validate(async (valid) => {
+    if (!valid) return
+    const rst = await applyBusGoods(applyFormData.value)
+    if (rst.code === 0) {
+      ElMessage({
+        type: 'success',
+        message: '入库成功'
+      })
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '入库失败'
+      })
+    }
+    applyBtnVisible.value = false
+  })
 }
 
 // 批量删除控制标记
@@ -431,4 +466,5 @@ const enterDialog = async () => {
 </script>
 
 <style>
+
 </style>

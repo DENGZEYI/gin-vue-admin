@@ -19,7 +19,7 @@ func (s *BusGoodsDictRouter) InitBusGoodsRouter(Router *gin.RouterGroup) {
 		busGoodsRouter.DELETE("deleteBusGoodsDict", busGoodsApi.DeleteBusGoodsDict)           // 删除BusGoods
 		busGoodsRouter.DELETE("deleteBusGoodsDictByIds", busGoodsApi.DeleteBusGoodsDictByIds) // 批量删除BusGoods
 		busGoodsRouter.PUT("updateBusGoodsDict", busGoodsApi.UpdateBusGoodsDict)              // 更新BusGoods
-		busGoodsRouter.POST("applyBusGoodsByIds", busGoodsApi.ApplyBusGoodsByIds)
+		busGoodsRouter.POST("applyBusGoods", busGoodsApi.ApplyBusGoods)
 	}
 	{
 		busGoodsRouterWithoutRecord.GET("findBusGoodsDict", busGoodsApi.FindBusGoodsDict)       // 根据ID获取BusGoods

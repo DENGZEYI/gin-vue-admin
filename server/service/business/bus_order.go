@@ -3,7 +3,7 @@ package business
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/business"
-	businessRe "github.com/flipped-aurora/gin-vue-admin/server/model/business/reply"
+	businessRep "github.com/flipped-aurora/gin-vue-admin/server/model/business/reply"
 	businessReq "github.com/flipped-aurora/gin-vue-admin/server/model/business/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
@@ -63,13 +63,13 @@ func (busOrderService *BusOrderService) GetBusOrder(id uint) (busOrder business.
 
 // GetBusOrderDetails 根据id获取GetBusOrderDetails
 // Author [piexlmax](https://github.com/piexlmax)
-func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (reBusOrderDetails businessRe.ReBusOrderDetails, err error) {
+func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (BusOrderDetailsRep businessRep.BusOrderDetailsRep, err error) {
 	var busOrder business.BusOrder
 	db := global.GVA_DB.Model(&business.BusOrder{})
 	err = db.Where("id = ?", orderID).Preload("BusOrderDetails.GoodsDict").First(&busOrder).Error
 
 	for i := 0; i < len(busOrder.BusOrderDetails); i++ {
-		reBusOrderDetail := businessRe.ReBusOrderDetail{
+		reBusOrderDetail := businessRep.BusOrderDetail{
 			GoodsDict:       busOrder.BusOrderDetails[i].GoodsDict,
 			Number:          busOrder.BusOrderDetails[i].Number,
 			NumberAlreadyIn: 0,
@@ -85,10 +85,10 @@ func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (reBusO
 				}
 			}
 		}
-		reBusOrderDetails.BusOrderDetails = append(reBusOrderDetails.BusOrderDetails, reBusOrderDetail)
+		BusOrderDetailsRep.BusOrderDetails = append(BusOrderDetailsRep.BusOrderDetails, reBusOrderDetail)
 	}
 
-	return reBusOrderDetails, err
+	return BusOrderDetailsRep, err
 }
 
 // GetBusOrderDetail 根据dict_id和bus_order_id获取BusOrderDetail

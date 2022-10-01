@@ -166,13 +166,13 @@ func (BusGoodsDictApi *BusGoodsDictApi) GetBusGoodsDictList(c *gin.Context) {
 	}
 }
 
-// ApplyBusGoodsByIds 申请Goods
+// ApplyBusGoods 申请Goods
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"申请成功"}"
 // @Router /BusGoodsDict/applyGoodsByIds [post]
-func (BusGoodsDictApi *BusGoodsDictApi) ApplyBusGoodsByIds(c *gin.Context) {
-	var applyInfo businessReq.BusApplyInfo
-	_ = c.ShouldBindJSON(&applyInfo)
-	if err := BusGoodsDictService.ApplyGoodsByIds(applyInfo, c); err != nil {
+func (BusGoodsDictApi *BusGoodsDictApi) ApplyBusGoods(c *gin.Context) {
+	var applyReq businessReq.BusApplyReq
+	_ = c.ShouldBindJSON(&applyReq)
+	if err := BusGoodsDictService.ApplyGoodsByIds(applyReq, c); err != nil {
 		global.GVA_LOG.Error("申请失败!", zap.Error(err))
 		response.FailWithMessage("申请失败", c)
 	} else {

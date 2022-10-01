@@ -73,19 +73,19 @@ func (BusGoodsDictService *BusGoodsDictService) GetBusGoodsDictInfoList(info bus
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&BusGoodsDicts).Error
+	err = db.Limit(limit).Offset(offset).Preload("Group").Preload("Factory").Find(&BusGoodsDicts).Error
 	return BusGoodsDicts, total, err
 }
 
 // ApplyGoodsByIds 创建申请记录
-func (BusGoodsDictService *BusGoodsDictService) ApplyGoodsByIds(busApplyInfo businessReq.BusApplyInfo, c *gin.Context) (err error) {
+func (BusGoodsDictService *BusGoodsDictService) ApplyGoodsByIds(applyReq businessReq.BusApplyReq, c *gin.Context) (err error) {
 	applicantID := utils.GetUserID(c) // 获取申请者ID
-	length := len(busApplyInfo.Ids)
+	length := len(applyReq.ApplyDetails)
 	var orderDetails []business.BusOrderDetail
 	for i := 0; i < length; i++ {
 		goodDetails := business.BusOrderDetail{
-			GoodsDictID: busApplyInfo.Ids[i].ID,
-			Number:      busApplyInfo.Ids[i].Number,
+			GoodsDictID: applyReq.ApplyDetails[i].GoodsDictID,
+			Number:      applyReq.ApplyDetails[i].ApplyNumber,
 		}
 		orderDetails = append(orderDetails, goodDetails)
 	}

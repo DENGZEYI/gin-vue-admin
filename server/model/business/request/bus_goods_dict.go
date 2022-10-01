@@ -10,11 +10,11 @@ type BusGoodsDictSearch struct {
 	request.PageInfo
 }
 
-type BusApplyGoodsByID struct {
-	ID     *uint `json:"ID" form:"ID"`
-	Number uint  `json:"number" form:"number"`
+type ApplyDetail struct {
+	GoodsDictID *uint `json:"goods_dict_id"`
+	ApplyNumber uint  `json:"apply_number"`
 }
 
-type BusApplyInfo struct {
-	Ids []BusApplyGoodsByID `json:"ids" form:"ids"`
+type BusApplyReq struct {
+	ApplyDetails []ApplyDetail `json:"apply_details"`
 }
