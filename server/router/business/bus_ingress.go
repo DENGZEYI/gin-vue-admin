@@ -18,6 +18,6 @@ func (s *BusIngressRouter) InitBusIngressRouter(Router *gin.RouterGroup) {
 		busIngressRouter.POST("ingress", busIngressApi.Ingress) // 入库
 	}
 	{
-		busIngressRouterWithoutRecord.GET("getBusIngressList", busIngressApi.GetBusIngressList) // 根据ID获取BusOrderDetail
+		busIngressRouterWithoutRecord.GET("getBusIngressList", busIngressApi.GetBusIngressList) // 获取入库单列表
 	}
 }

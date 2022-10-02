@@ -9,6 +9,6 @@ type req struct {
 	Name string `json:"name"`
 }
 
-func Test1(t *testing.T) {
+func Test3(t *testing.T) {
 
 }

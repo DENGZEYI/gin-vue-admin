@@ -50,7 +50,7 @@ func RegisterTables(db *gorm.DB) {
 		example.ExaFileChunk{},
 		example.ExaFileUploadAndDownload{},
 
-		// business表
+		// 应用层所需表
 		system.BusGroup{},
 		business.BusProvider{},
 		business.BusGoodsDict{},

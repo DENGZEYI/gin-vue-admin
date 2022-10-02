@@ -2,8 +2,7 @@ package test
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/business"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/business/reply"
+	. "github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -21,46 +20,23 @@ func Test1(t *testing.T) {
 	if err != nil {
 		return
 	}
-	//var results []result
-	var list []reply.BusIngressRep
-	var orderlist []business.BusOrder
-	// 创建db
-	db = db.Model(&business.BusOrder{})
-	db.Preload("BusOrderDetails.GoodsDict.Provider").Preload("BusOrderDetails.GoodsDict.Group").Preload(clause.Associations).Find(&orderlist)
-	// 填写返回的数据
-	for i := 0; i < len(orderlist); i++ {
-		for j := 0; j < len(orderlist[i].BusOrderDetails); j++ {
-			//  根据orderID和goodDictID计算已入库数量
-			orderID := orderlist[i].ID
-			goodsDictID := orderlist[i].BusOrderDetails[j].GoodsDictID
-			arrivalNum := 0
-			//  根据orderID和goodDictID计算已入库数量
-			var ingresses []business.BusIngress
-			global.GVA_DB.Where("bus_order_id = ?", orderID).Preload("BusIngressDetails").Find(&ingresses)
-			for j := 0; j < len(ingresses); j++ {
-				for k := 0; k < len(ingresses[j].BusIngressDetails); k++ {
-					if *ingresses[j].BusIngressDetails[k].GoodsDictID == *goodsDictID {
-						arrivalNum += int(ingresses[j].BusIngressDetails[k].IngressNumber)
-					}
-				}
-			}
-			// 填写返回的数据
-			var rep = reply.BusIngressRep{
-				BusOrderID:    &(orderlist[i].ID),
-				GoodsName:     orderlist[i].BusOrderDetails[j].GoodsDict.Name,
-				Specification: orderlist[i].BusOrderDetails[j].GoodsDict.Specification,
-				ApplyNumber:   orderlist[i].BusOrderDetails[j].Number,
-				ArrivalNumber: uint(arrivalNum),
-				GroupName:     orderlist[i].BusOrderDetails[j].GoodsDict.Group.Name,
-				ProviderName:  orderlist[i].BusOrderDetails[j].GoodsDict.Provider.Name,
-				ApplyDate:     orderlist[i].CreatedAt,
-				ApplicantName: orderlist[i].Applicant.NickName,
-				ApproveDate:   orderlist[i].ApproveTime,
-				ApproverName:  orderlist[i].Approver.NickName,
-				PurchaserName: orderlist[i].Purchaser.NickName,
-			}
-			list = append(list, rep)
-		}
+	entities := []SysBaseMenu{
+		// 字典
+		{GVA_MODEL: global.GVA_MODEL{ID: 100}, MenuLevel: 0, Hidden: false, ParentId: "0", Path: "busDict", Name: "busDict", Component: "", Sort: 0, Meta: Meta{Title: "字典", Icon: "message"}},
+		{GVA_MODEL: global.GVA_MODEL{ID: 101}, MenuLevel: 0, Hidden: false, ParentId: "100", Path: "busGoodsDict", Name: "busGoodsDict", Component: "view/busGoodsDict/busGoodsDict.vue", Sort: 0, Meta: Meta{Title: "耗材字典", Icon: "message"}},
+		{GVA_MODEL: global.GVA_MODEL{ID: 102}, MenuLevel: 0, Hidden: false, ParentId: "100", Path: "busFactory", Name: "busFactory", Component: "view/busFactory/busFactory.vue", Sort: 0, Meta: Meta{Title: "生产厂商字典", Icon: "message"}},
+		{GVA_MODEL: global.GVA_MODEL{ID: 103}, MenuLevel: 0, Hidden: false, ParentId: "100", Path: "busProvider", Name: "busProvider", Component: "view/busProvider/busProvider.vue", Sort: 0, Meta: Meta{Title: "供应商字典", Icon: "message"}},
+		{GVA_MODEL: global.GVA_MODEL{ID: 104}, MenuLevel: 0, Hidden: false, ParentId: "100", Path: "busGroup", Name: "busGroup", Component: "view/busGroup/busGroup.vue", Sort: 0, Meta: Meta{Title: "组别字典", Icon: "message"}},
+		// 申请
+
+		// 申请单的审批、采购
+		{GVA_MODEL: global.GVA_MODEL{ID: 201}, MenuLevel: 0, Hidden: false, ParentId: "0", Path: "busOrder", Name: "busOrder", Component: "view/busOrder/busOrder.vue", Sort: 0, Meta: Meta{Title: "申请单", Icon: "message"}},
+		// 入库
+		{GVA_MODEL: global.GVA_MODEL{ID: 301}, MenuLevel: 0, Hidden: false, ParentId: "0", Path: "busIngress", Name: "busIngress", Component: "view/busIngress/busIngress.vue", Sort: 0, Meta: Meta{Title: "入库", Icon: "message"}},
 	}
-	print("输出")
+	if err = db.Clauses(clause.OnConflict{UpdateAll: true}).Create(&entities).Error; err != nil {
+		print("失败")
+		return
+	}
+	print("成功")
 }

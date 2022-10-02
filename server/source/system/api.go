@@ -2,6 +2,7 @@ package system
 
 import (
 	"context"
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	sysModel "github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
 	"github.com/pkg/errors"
@@ -158,7 +159,42 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{ApiGroup: "按钮权限", Method: "POST", Path: "/authorityBtn/canRemoveAuthorityBtn", Description: "删除按钮"},
 
 		//应用层API
-
+		// 专业组API
+		{GVA_MODEL: global.GVA_MODEL{ID: 100}, ApiGroup: "专业组", Method: "GET", Path: "/busGroup/getBusGroupList", Description: "获取专业组列表"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 101}, ApiGroup: "专业组", Method: "GET", Path: "/busGroup/FindBusGroup", Description: "根据ID获取专业组"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 102}, ApiGroup: "专业组", Method: "POST", Path: "/busGroup/createBusGroup", Description: "创建专业组"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 103}, ApiGroup: "专业组", Method: "PUT", Path: "/busGroup/updateBusGroup", Description: "更行专业组"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 104}, ApiGroup: "专业组", Method: "DELETE", Path: "/busGroup/deleteBusGroup", Description: "删除专业组"},
+		// 供应商API
+		{GVA_MODEL: global.GVA_MODEL{ID: 200}, ApiGroup: "供应商", Method: "GET", Path: "/busProvider/getBusProviderList", Description: "获取供应商列表"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 201}, ApiGroup: "供应商", Method: "GET", Path: "/busProvider/findBusProvider", Description: "根据ID获取供应商"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 202}, ApiGroup: "供应商", Method: "POST", Path: "/busProvider/createBusProvider", Description: "新建供应商"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 203}, ApiGroup: "供应商", Method: "PUT", Path: "/busProvider/updateBusProvider", Description: "更新供应商"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 204}, ApiGroup: "供应商", Method: "DELETE", Path: "/busProvider/deleteBusProvider", Description: "删除供应商"},
+		// 生产厂商
+		{GVA_MODEL: global.GVA_MODEL{ID: 300}, ApiGroup: "生产厂商", Method: "GET", Path: "/busFactory/getBusFactoryList", Description: "获取生产厂商列表"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 301}, ApiGroup: "生产厂商", Method: "GET", Path: "/busFactory/findBusFactory", Description: "根据ID获取生产厂商"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 302}, ApiGroup: "生产厂商", Method: "POST", Path: "/busFactory/createBusFactory", Description: "新建生产厂商"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 303}, ApiGroup: "生产厂商", Method: "PUT", Path: "/busFactory/updateBusFactory", Description: "更新生产厂商"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 304}, ApiGroup: "生产厂商", Method: "DELETE", Path: "/busFactory/deleteBusFactory", Description: "删除生产厂商"},
+		// 耗材API
+		{GVA_MODEL: global.GVA_MODEL{ID: 400}, ApiGroup: "耗材字典", Method: "GET", Path: "/busGoodsDict/getBusGoodsDictList", Description: "获取耗材字典列表"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 401}, ApiGroup: "耗材字典", Method: "GET", Path: "/busGoodsDict/findBusGoodsDict", Description: "根据ID获取耗材字典"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 402}, ApiGroup: "耗材字典", Method: "POST", Path: "/busGoodsDict/createBusGoodsDict", Description: "新建耗材字典"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 403}, ApiGroup: "耗材字典", Method: "PUT", Path: "/busGoodsDict/updateBusGoodsDict", Description: "更新耗材字典"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 404}, ApiGroup: "耗材字典", Method: "DELETE", Path: "/busGoodsDict/deleteBusGoodsDict", Description: "删除耗材字典"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 405}, ApiGroup: "耗材字典", Method: "POST", Path: "/busGoodsDict/applyBusGoods", Description: "申请耗材"},
+		// 申请表API
+		{GVA_MODEL: global.GVA_MODEL{ID: 500}, ApiGroup: "申请表", Method: "GET", Path: "/busOrder/getBusOrderList", Description: "获取申请单列表"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 501}, ApiGroup: "申请表", Method: "GET", Path: "/busOrder/findBusOrder", Description: "根据ID获取申请单"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 502}, ApiGroup: "申请表", Method: "PUT", Path: "/busOrder/approveBusOrder", Description: "审批申请单"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 503}, ApiGroup: "申请表", Method: "PUT", Path: "/busOrder/purchaseBusOrder", Description: "采购申请单"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 504}, ApiGroup: "申请表", Method: "GET", Path: "/busOrder/getOrderDetails", Description: "获取申请单详情"},
+		// 入库API
+		{GVA_MODEL: global.GVA_MODEL{ID: 505}, ApiGroup: "入库表", Method: "GET", Path: "/busIngress/getBusIngressList", Description: "获取入库单列表"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 506}, ApiGroup: "入库表", Method: "POST", Path: "/busIngress/ingress", Description: "入库"},
+		// 应用层字典
+		{GVA_MODEL: global.GVA_MODEL{ID: 507}, ApiGroup: "应用层字典", Method: "GET", Path: "/busDictionary/findBusDictionary", Description: "获取应用层字典"},
 	}
 	if err := db.Create(&entities).Error; err != nil {
 		return ctx, errors.Wrap(err, sysModel.SysApi{}.TableName()+"表数据初始化失败!")
