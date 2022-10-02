@@ -94,17 +94,6 @@ const pageSize = ref(10)
 const tableData = ref([])
 const searchInfo = ref({})
 
-// 重置
-const onReset = () => {
-  searchInfo.value = {}
-}
-
-// 搜索
-const onSubmit = () => {
-  page.value = 1
-  pageSize.value = 10
-  getTableData()
-}
 
 // 分页
 const handleSizeChange = (val) => {
