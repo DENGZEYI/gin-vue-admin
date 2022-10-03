@@ -11,7 +11,5 @@ type ApplyState struct {
 	ID   uint
 }
 
-// EmergencyGroupLeader authorityID
-// 急诊组
-const EmergencyGroupLeader uint = 1
-const EmergencyGroupMember uint = 2
+// Chair 主任的authorityID
+const Chair uint = 1

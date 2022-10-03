@@ -9,6 +9,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"net/http"
 )
 
 type BusOrderApi struct {
@@ -117,6 +118,21 @@ func (busOrderApi *BusOrderApi) PurchaseBusOrder(c *gin.Context) {
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
+	}
+}
+
+// PrintBusOrder 打印订购单
+func (busOrderApi *BusOrderApi) PrintBusOrder(c *gin.Context) {
+	var busOrder business.BusOrder
+	_ = c.ShouldBindQuery(&busOrder)
+	if err, f := busOrderService.PrintBusOrder(busOrder); err != nil {
+		global.GVA_LOG.Error("订购单生成失败!", zap.Error(err))
+		response.FailWithMessage("订购单生成失败", c)
+	} else {
+		c.Header("response-type", "blob")
+		data, _ := f.WriteToBuffer()
+		c.Data(http.StatusOK, "application/vnd.ms-excel", data.Bytes())
+		//response.OkWithData(data.Bytes(), c)
 	}
 }
 

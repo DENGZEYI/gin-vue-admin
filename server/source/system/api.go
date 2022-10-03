@@ -184,17 +184,18 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{GVA_MODEL: global.GVA_MODEL{ID: 403}, ApiGroup: "耗材字典", Method: "PUT", Path: "/busGoodsDict/updateBusGoodsDict", Description: "更新耗材字典"},
 		{GVA_MODEL: global.GVA_MODEL{ID: 404}, ApiGroup: "耗材字典", Method: "DELETE", Path: "/busGoodsDict/deleteBusGoodsDict", Description: "删除耗材字典"},
 		{GVA_MODEL: global.GVA_MODEL{ID: 405}, ApiGroup: "耗材字典", Method: "POST", Path: "/busGoodsDict/applyBusGoods", Description: "申请耗材"},
-		// 申请表API
-		{GVA_MODEL: global.GVA_MODEL{ID: 500}, ApiGroup: "申请表", Method: "GET", Path: "/busOrder/getBusOrderList", Description: "获取申请单列表"},
-		{GVA_MODEL: global.GVA_MODEL{ID: 501}, ApiGroup: "申请表", Method: "GET", Path: "/busOrder/findBusOrder", Description: "根据ID获取申请单"},
-		{GVA_MODEL: global.GVA_MODEL{ID: 502}, ApiGroup: "申请表", Method: "PUT", Path: "/busOrder/approveBusOrder", Description: "审批申请单"},
-		{GVA_MODEL: global.GVA_MODEL{ID: 503}, ApiGroup: "申请表", Method: "PUT", Path: "/busOrder/purchaseBusOrder", Description: "采购申请单"},
-		{GVA_MODEL: global.GVA_MODEL{ID: 504}, ApiGroup: "申请表", Method: "GET", Path: "/busOrder/getOrderDetails", Description: "获取申请单详情"},
+		// 申购单API
+		{GVA_MODEL: global.GVA_MODEL{ID: 500}, ApiGroup: "申购单", Method: "GET", Path: "/busOrder/getBusOrderList", Description: "获取申请单列表"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 501}, ApiGroup: "申购单", Method: "GET", Path: "/busOrder/findBusOrder", Description: "根据ID获取申请单"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 502}, ApiGroup: "申购单", Method: "PUT", Path: "/busOrder/approveBusOrder", Description: "审批申请单"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 503}, ApiGroup: "申购单", Method: "PUT", Path: "/busOrder/purchaseBusOrder", Description: "采购申请单"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 504}, ApiGroup: "申购单", Method: "GET", Path: "/busOrder/getOrderDetails", Description: "获取申请单详情"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 504}, ApiGroup: "申购单", Method: "GET", Path: "/busOrder/printBusOrder", Description: "打印申购单"},
 		// 入库API
-		{GVA_MODEL: global.GVA_MODEL{ID: 505}, ApiGroup: "入库表", Method: "GET", Path: "/busIngress/getBusIngressList", Description: "获取入库单列表"},
-		{GVA_MODEL: global.GVA_MODEL{ID: 506}, ApiGroup: "入库表", Method: "POST", Path: "/busIngress/ingress", Description: "入库"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 600}, ApiGroup: "入库表", Method: "GET", Path: "/busIngress/getBusIngressList", Description: "获取入库单列表"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 601}, ApiGroup: "入库表", Method: "POST", Path: "/busIngress/ingress", Description: "入库"},
 		// 应用层字典
-		{GVA_MODEL: global.GVA_MODEL{ID: 507}, ApiGroup: "应用层字典", Method: "GET", Path: "/busDictionary/findBusDictionary", Description: "获取应用层字典"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 700}, ApiGroup: "应用层字典", Method: "GET", Path: "/busDictionary/findBusDictionary", Description: "获取应用层字典"},
 	}
 	if err := db.Create(&entities).Error; err != nil {
 		return ctx, errors.Wrap(err, sysModel.SysApi{}.TableName()+"表数据初始化失败!")

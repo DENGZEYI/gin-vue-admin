@@ -1,9 +1,7 @@
 <template>
     <div>
         <div class="gva-table-box">
-            <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
-                @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55" />
+            <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID">
                 <el-table-column align="left" label="采购时间" prop="purchase_time" width="180">
                     <template #default="scope">{{ formatDate(scope.row.purchase_date) }}</template>
                 </el-table-column>
@@ -11,7 +9,7 @@
                 <el-table-column align="left" label="耗材名称" prop="goods_name" />
                 <el-table-column align="left" label="规格" prop="specification" />
                 <el-table-column align="left" label="申请数量" prop="apply_number" />
-                <el-table-column align="left" label="已入库数量" prop="arrival_number" width="140"/>
+                <el-table-column align="left" label="已入库数量" prop="arrival_number" width="140" />
                 <el-table-column align="left" label="库存点" prop="group_name" width="140" />
                 <el-table-column align="left" label="供应商名称" prop="provider_name" width="140" />
                 <el-table-column align="left" label="申请时间" width="180">
@@ -51,7 +49,7 @@
                     style="width: 100%" />
             </el-form-item>
             <el-form-item label="入库日期">
-                <el-date-picker v-model="ingressFormData.ingress_date" type="date" style="width: 100%" disabled/>
+                <el-date-picker v-model="ingressFormData.ingress_date" type="date" style="width: 100%" disabled />
             </el-form-item>
             <el-form-item>
                 <el-popover v-model:visible="ingressBtnVisible" placement="top" width="160">
@@ -61,7 +59,8 @@
                         <el-button size="small" type="primary" @click="ingressFunc">确定入库</el-button>
                     </div>
                     <template #reference>
-                        <el-button type="primary" :disabled="!ingressFormData.ingress_details.length" @click="ingressBtnVisible = true">入库</el-button>
+                        <el-button type="primary" :disabled="!ingressFormData.ingress_details.length"
+                            @click="ingressBtnVisible = true">入库</el-button>
                     </template>
                 </el-popover>
             </el-form-item>
@@ -71,7 +70,8 @@
                     <el-table-column align="left" label="规格" prop="specification" />
                     <el-table-column align="left" label="批号" prop="batch">
                         <template #default="scope">
-                            <el-form-item label=" " :prop=" 'ingress_details.' + scope.$index + '.batch' " :rules='rules.batch'>
+                            <el-form-item label=" " :prop=" 'ingress_details.' + scope.$index + '.batch' "
+                                :rules='rules.batch'>
                                 <el-input ref="input" v-model="scope.row.batch" placeholder="请输入批号" style="width: 100%">
                                 </el-input>
                             </el-form-item>
@@ -79,7 +79,8 @@
                     </el-table-column>
                     <el-table-column align="left" label="有效期" prop="expiration_date">
                         <template #default="scope">
-                            <el-form-item label=" " :prop=" 'ingress_details.' + scope.$index + '.expiration_date' " :rules='rules.expiration_date'>
+                            <el-form-item label=" " :prop=" 'ingress_details.' + scope.$index + '.expiration_date' "
+                                :rules='rules.expiration_date'>
                                 <el-date-picker :clearable="false" v-model="scope.row.expiration_date" type="date"
                                     placeholder="请输入有效期">
                                 </el-date-picker>
@@ -88,7 +89,8 @@
                     </el-table-column>
                     <el-table-column align="left" label="入库数量" prop="ingress_number">
                         <template #default="scope">
-                            <el-form-item label=" " :prop=" 'ingress_details.' + scope.$index + '.ingress_number' " :rules='rules.ingress_number'>
+                            <el-form-item label=" " :prop=" 'ingress_details.' + scope.$index + '.ingress_number' "
+                                :rules='rules.ingress_number'>
                                 <el-input onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"
                                     v-model.number="scope.row.ingress_number" placeholder="请输入入库数量" />
                             </el-form-item>
@@ -156,8 +158,8 @@ getTableData()
 const ingressBtnVisible = ref(false)
 const ingressFormData = ref({
     order_id: undefined,
-    group_name: "",
-    delivery_number: "",
+    group_name: undefined,
+    delivery_number: undefined,
     ingress_date: new Date(),
     ingress_details: []
 })
@@ -191,11 +193,11 @@ const rules = reactive({
     }],
 })
 // 判断是否重复添加需要入库的耗材
-const isRepeat=(row)=>{
+const isRepeat = (row) => {
     for (var i = 0; i < ingressFormData.value.ingress_details.length; i++) {
-        if(ingressFormData.value.ingress_details[i].goods_dict_id == row.goods_dict_id) {
-                return true
-            }
+        if (ingressFormData.value.ingress_details[i].goods_dict_id == row.goods_dict_id) {
+            return true
+        }
     }
     return false
 }
@@ -246,16 +248,14 @@ const ingressFunc = async () => {
             })
         }
         getTableData()
-        ingressBtnVisible.value=false
+        ingressBtnVisible.value = false
+        // 清空
+        ingressFormData.value = {
+            ingress_details: []
+        }
     })
 }
 
-// 多选数据
-const multipleSelection = ref([])
-// 多选
-const handleSelectionChange = (val) => {
-    multipleSelection.value = val
-}
 </script>
   
 <style>

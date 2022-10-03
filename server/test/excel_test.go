@@ -3,26 +3,45 @@ package test
 import (
 	"fmt"
 	"github.com/xuri/excelize/v2"
+	"strconv"
 	"testing"
 )
 
-func Test2(t *testing.T) {
+// CreateXlS data为要写入的数据,fileName 文件名称, headerNameArray 表头数组
+func CreateXlS(data [2][2]string, fileName string, headerNameArray [2]string) {
 	f := excelize.NewFile()
-	// Create a new sheet.
-	index := f.NewSheet("Sheet2")
-	// Set value of a cell.
-	err := f.SetCellValue("Sheet2", "A2", "Hello world.")
-	if err != nil {
-		return
+	sheetName := "Sheet1"
+	sheetWords := []string{
+		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+		"V", "W", "X", "Y", "Z",
 	}
-	err = f.SetCellValue("Sheet1", "B2", 100)
-	if err != nil {
-		return
+	for k, v := range headerNameArray {
+		err := f.SetCellValue(sheetName, sheetWords[k]+"1", v)
+		if err != nil {
+			return
+		}
 	}
-	// Set active sheet of the workbook.
-	f.SetActiveSheet(index)
-	// Save spreadsheet by the given path.
-	if err := f.SaveAs("Book1.xlsx"); err != nil {
+
+	line := 1
+	// 循环写入数据
+	for _, v := range data {
+		line++
+		for kk, _ := range headerNameArray {
+			f.SetCellValue(sheetName, sheetWords[kk]+strconv.Itoa(line), v[kk])
+		}
+	}
+	// 保存文件
+	if err := f.SaveAs(fileName + ".xlsx"); err != nil {
 		fmt.Println(err)
 	}
+}
+func Test2(t *testing.T) {
+	var stringData = [2][2]string{
+		{"1", "2"},
+		{"3", "4"},
+	}
+	var headerName = [2]string{
+		"第一列", "第二列",
+	}
+	CreateXlS(stringData, "test", headerName)
 }

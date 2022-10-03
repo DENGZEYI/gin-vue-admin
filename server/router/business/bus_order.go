@@ -23,9 +23,10 @@ func (s *BusOrderRouter) InitBusOrderRouter(Router *gin.RouterGroup) {
 		busOrderRouter.PUT("purchaseBusOrder", busOrderApi.PurchaseBusOrder)          // 更新BusOrder的状态为采购
 	}
 	{
-		busOrderRouterWithoutRecord.GET("getOrderDetail", busOrderApi.GetOrderDetail)   // 根据ID获取BusOrderDetail
+		busOrderRouterWithoutRecord.GET("getOrderDetail", busOrderApi.GetOrderDetail)   // 根据dict_id和bus_order_id获取BusOrderDetail
 		busOrderRouterWithoutRecord.GET("findBusOrder", busOrderApi.FindBusOrder)       // 根据ID获取BusOrder
 		busOrderRouterWithoutRecord.GET("getBusOrderList", busOrderApi.GetBusOrderList) // 获取BusOrder列表
-		busOrderRouterWithoutRecord.GET("getOrderDetails", busOrderApi.GetOrderDetails)
+		busOrderRouterWithoutRecord.GET("getOrderDetails", busOrderApi.GetOrderDetails) // 根据ID获取订单详情
+		busOrderRouterWithoutRecord.GET("printBusOrder", busOrderApi.PrintBusOrder)     // 打印申购单
 	}
 }

@@ -42,9 +42,7 @@
           </template>
         </el-popover>
       </div>
-      <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
-        @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" />
+      <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID">
         <el-table-column align="left" label="耗材ID" prop="ID" width="120" />
         <el-table-column align="left" label="耗材名称" prop="name" width="120" />
         <el-table-column align="left" label="组别" prop="group_id" width="120">
@@ -239,13 +237,6 @@ const setOptions = async () => {
 // 获取需要的字典 可能为空 按需保留
 setOptions()
 
-// 多选数据
-const multipleSelection = ref([])
-// 多选
-const handleSelectionChange = (val) => {
-  multipleSelection.value = val
-}
-
 // 删除行
 const deleteRow = (row) => {
   ElMessageBox.confirm('确定要删除吗?', '提示', {
@@ -257,37 +248,6 @@ const deleteRow = (row) => {
   })
 }
 
-
-// 批量删除控制标记
-const deleteVisible = ref(false)
-
-// 多选删除
-const onDelete = async () => {
-  const ids = []
-  if (multipleSelection.value.length === 0) {
-    ElMessage({
-      type: 'warning',
-      message: '请选择要删除的数据'
-    })
-    return
-  }
-  multipleSelection.value &&
-    multipleSelection.value.map(item => {
-      ids.push(item.ID)
-    })
-  const res = await deleteBusGoodsDictByIds({ ids })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-    if (tableData.value.length === ids.length && page.value > 1) {
-      page.value--
-    }
-    deleteVisible.value = false
-    getTableData()
-  }
-}
 
 // 行为控制标记（弹窗内部需要增还是改）
 const type = ref('')
@@ -365,8 +325,6 @@ const enterDialog = async () => {
     }
   })
 }
-
-
 
 </script>
 

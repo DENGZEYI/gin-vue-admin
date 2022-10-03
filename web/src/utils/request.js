@@ -63,6 +63,10 @@ service.interceptors.response.use(
     if (response.headers['new-token']) {
       userStore.setToken(response.headers['new-token'])
     }
+    if (response.headers['response-type']==="blob"){
+      // 不对下载文件类型的响应进行拦截
+      return response
+    }
     if (response.data.code === 0 || response.headers.success === 'true') {
       if (response.headers.msg) {
         response.data.msg = decodeURI(response.headers.msg)

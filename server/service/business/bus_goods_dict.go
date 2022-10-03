@@ -60,6 +60,10 @@ func (BusGoodsDictService *BusGoodsDictService) GetBusGoodsDictInfoList(info bus
 	// 将groupID强制修改为角色所属的GroupID
 	groupID := info.GroupID
 	groupID = auth.GroupID
+	if auth.AuthorityId == global.Chair {
+		// 主任不受限制
+		groupID = info.GroupID
+	}
 	// 避免使用sql关键词GROUP，所以需要使用`进行转义
 	db = db.Where("`group_id` = ?", groupID)
 

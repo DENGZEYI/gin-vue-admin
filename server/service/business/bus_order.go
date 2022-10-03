@@ -8,6 +8,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/xuri/excelize/v2"
+	"strconv"
 	"time"
 )
 
@@ -54,6 +56,59 @@ func (busOrderService *BusOrderService) PurchaseBusOrder(busOrder business.BusOr
 	return err
 }
 
+// PrintBusOrder 打印订购单
+func (busOrderService *BusOrderService) PrintBusOrder(busOrder business.BusOrder) (err error, f *excelize.File) {
+	db := global.GVA_DB.Model(&business.BusOrder{})
+	err = db.Preload("BusOrderDetails.GoodsDict").First(&busOrder).Error
+	err, f = generateXls(busOrder)
+	if err != nil {
+		return err, f
+	}
+	// 生成订购单
+	return err, f
+}
+
+func generateXls(busOrder business.BusOrder) (err error, f *excelize.File) {
+	// 获取数据
+	rowLen := len(busOrder.BusOrderDetails)
+	headerNameArray := []string{"医用耗材名称", "规格型号", "单位", "申购数量"}
+	columnLen := len(headerNameArray)
+	var data [][]string
+	for i := 0; i < rowLen; i++ {
+		line := make([]string, columnLen)
+		line[0] = busOrder.BusOrderDetails[i].GoodsDict.Name
+		line[1] = busOrder.BusOrderDetails[i].GoodsDict.Specification
+		line[2] = busOrder.BusOrderDetails[i].GoodsDict.Unit
+		line[3] = strconv.Itoa(int(busOrder.BusOrderDetails[i].Number))
+		data = append(data, line)
+	}
+	// 写如excel
+	f = excelize.NewFile()
+	defaultSheetName := "Sheet1"
+	columnWords := []string{
+		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+		"V", "W", "X", "Y", "Z",
+	}
+	for k, v := range headerNameArray {
+		err := f.SetCellValue(defaultSheetName, columnWords[k]+"1", v)
+		if err != nil {
+			return err, f
+		}
+	}
+	line := 1
+	// 循环写入数据
+	for _, v := range data {
+		line++
+		for kk, _ := range headerNameArray {
+			err := f.SetCellValue(defaultSheetName, columnWords[kk]+strconv.Itoa(line), v[kk])
+			if err != nil {
+				return err, f
+			}
+		}
+	}
+	return err, f
+}
+
 // GetBusOrder 根据id获取BusOrder记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (busOrderService *BusOrderService) GetBusOrder(id uint) (busOrder business.BusOrder, err error) {
@@ -66,7 +121,7 @@ func (busOrderService *BusOrderService) GetBusOrder(id uint) (busOrder business.
 func (busOrderService *BusOrderService) GetBusOrderDetails(orderID uint) (BusOrderDetailsRep businessRep.BusOrderDetailsRep, err error) {
 	var busOrder business.BusOrder
 	db := global.GVA_DB.Model(&business.BusOrder{})
-	err = db.Where("id = ?", orderID).Preload("BusOrderDetails.GoodsDict").First(&busOrder).Error
+	err = db.Where("id = ?", orderID).Preload("BusOrderDetails.GoodsDict.Group").First(&busOrder).Error
 
 	for i := 0; i < len(busOrder.BusOrderDetails); i++ {
 		reBusOrderDetail := businessRep.BusOrderDetail{

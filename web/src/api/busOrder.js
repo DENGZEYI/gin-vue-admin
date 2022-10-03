@@ -87,13 +87,16 @@ export const purchase = (data) => {
   })
 }
 
-export const ingressBusOrder = (data) => {
+export const print = (params) => {
+  // todo 这几个参数是在什么时候被加到HTTP请求里的？
   return service({
-    url: '/busOrder/ingressBusOrder',
-    method: 'put',
-    data
+    url: '/busOrder/printBusOrder',
+    method: 'get',
+    params,
+    responseType: "blob"
   })
 }
+
 
 // @Tags BusOrder
 // @Summary 用id查询BusOrder

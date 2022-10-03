@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!--
     <div class="gva-search-box">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <el-form-item>
@@ -8,16 +9,18 @@
         </el-form-item>
       </el-form>
     </div>
+    -->
     <div class="gva-table-box">
-      <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
-        @expand-change="expandChange">
+      <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID" @expand-change="expandChange">
         <el-table-column label="详情" type="expand" width="120">
           <template #default="props">
             <h3>采购申请单详情</h3>
             <el-table :data="props.row.details">
+              <el-table-column label="耗材ID" prop="goods_dict.ID" width="120" />
               <el-table-column label="耗材名称" prop="goods_dict.name" width="120" />
-              <el-table-column align="left" label="单位" prop="goods_dict.unit" width="120" />
-              <el-table-column align="left" label="耗材规格" prop="goods_dict.specification" width="200" />
+              <el-table-column label="专业组" prop="goods_dict.group.name" width="120" />
+              <el-table-column label="单位" prop="goods_dict.unit" width="120" />
+              <el-table-column label="耗材规格" prop="goods_dict.specification" width="200" />
               <el-table-column label="申请数量" prop="number" width="120" />
               <el-table-column label="已入库数量" prop="number_already_in" width="160" />
             </el-table>
@@ -39,7 +42,7 @@
         <el-table-column align="left" label="申请状态" prop="state" width="120">
           <template #default="scope">{{ filterDict(scope.row.state, applyStateOptions) }}</template>
         </el-table-column>
-        <el-table-column align="left" fixed="right" label="审批按钮" width="300">
+        <el-table-column align="left" fixed="right" label="审批按钮组" width="300">
           <template #default="scope">
             <el-button type="success" :disabled="scope.row.state !== orderOptions['PROCESSING']"
               @click="approveFunc(scope.row,'success')">审批通过</el-button>
@@ -47,10 +50,15 @@
               @click="approveFunc(scope.row,'fail')">审批退回</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="left" fixed="right" label="采购按钮" width="100">
+        <el-table-column align="left" fixed="right" label="采购按钮组" width="100">
           <template #default="scope">
             <el-button type="primary" :disabled="scope.row.state !== orderOptions['PASS']"
               @click="purchaseFunc(scope.row)">采购</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" fixed="right" label="打印按钮组" width="100">
+          <template #default="scope">
+            <el-button type="primary" @click="printFunc(scope.row)">打印采购单</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -74,7 +82,8 @@ import {
   getBusOrderList,
   getOrderDetails,
   approve,
-  purchase
+  purchase,
+  print
 } from '@/api/busOrder'
 
 import {
@@ -202,6 +211,16 @@ const purchaseFunc = async (row) => {
   getTableData()
 }
 
+// 打印订购单
+const printFunc = async (row) => {
+  const res = await print({ ID: row.ID })
+  let blobUrl = window.URL.createObjectURL(new Blob([res.data], { type: "application/vnd.ms-excel" }))
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.download = "医用耗材申购单.xlsx"
+  a.href = blobUrl
+  a.click()
+}
 
 </script>
 

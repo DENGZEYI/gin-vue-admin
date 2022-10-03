@@ -90,7 +90,7 @@ const buildApiTree = (apis) => {
   for (const key in apiObj) {
     const treeNode = {
       ID: key,
-      description: key + '组',
+      description: key + '---API权限',
       children: apiObj[key]
     }
     apiTree.push(treeNode)

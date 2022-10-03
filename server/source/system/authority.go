@@ -2,6 +2,7 @@ package system
 
 import (
 	"context"
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	sysModel "github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
 	"github.com/pkg/errors"
@@ -44,6 +45,7 @@ func (i *initAuthority) InitializeData(ctx context.Context) (context.Context, er
 	}
 	entities := []sysModel.SysAuthority{
 		{AuthorityId: 888, AuthorityName: "超级管理员", ParentId: 0, DefaultRouter: "dashboard"},
+		{AuthorityId: global.Chair, AuthorityName: "主任", ParentId: 0, DefaultRouter: "person"},
 	}
 
 	if err := db.Create(&entities).Error; err != nil {
