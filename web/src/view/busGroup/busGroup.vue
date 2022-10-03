@@ -3,22 +3,10 @@
     <div class="gva-table-box">
       <div class="gva-btn-list">
         <el-button size="small" type="primary" icon="plus" @click="openDialog">新增</el-button>
-        <el-popover v-model:visible="deleteVisible" placement="top" width="160">
-          <p>确定要删除吗？</p>
-          <div style="text-align: right; margin-top: 8px;">
-            <el-button size="small" type="primary" link @click="deleteVisible = false">取消</el-button>
-            <el-button size="small" type="primary" @click="onDelete">确定</el-button>
-          </div>
-          <template #reference>
-            <el-button icon="delete" size="small" style="margin-left: 10px;" :disabled="!multipleSelection.length"
-              @click="deleteVisible = true">删除</el-button>
-          </template>
-        </el-popover>
       </div>
-      <el-table ref="multipleTable" style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
-        @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" />
-        <el-table-column align="left" label="组别名称" prop="name" width="140" />
+      <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID">
+        <el-table-column align="left" label="专业组ID" prop="ID" width="140" />
+        <el-table-column align="left" label="专业组名称" prop="name" width="140" />
         <el-table-column align="left" label="按钮组">
           <template #default="scope">
             <el-button type="primary" link icon="edit" size="small" class="table-button"
@@ -59,7 +47,6 @@ export default {
 import {
   createBusGroup,
   deleteBusGroup,
-  deleteBusGroupByIds,
   updateBusGroup,
   findBusGroup,
   getBusGroupList
@@ -130,12 +117,6 @@ const setOptions = async () => {
 setOptions()
 
 
-// 多选数据
-const multipleSelection = ref([])
-// 多选
-const handleSelectionChange = (val) => {
-  multipleSelection.value = val
-}
 
 // 删除行
 const deleteRow = (row) => {
@@ -149,36 +130,6 @@ const deleteRow = (row) => {
 }
 
 
-// 批量删除控制标记
-const deleteVisible = ref(false)
-
-// 多选删除
-const onDelete = async () => {
-  const ids = []
-  if (multipleSelection.value.length === 0) {
-    ElMessage({
-      type: 'warning',
-      message: '请选择要删除的数据'
-    })
-    return
-  }
-  multipleSelection.value &&
-    multipleSelection.value.map(item => {
-      ids.push(item.ID)
-    })
-  const res = await deleteBusGroupByIds({ ids })
-  if (res.code === 0) {
-    ElMessage({
-      type: 'success',
-      message: '删除成功'
-    })
-    if (tableData.value.length === ids.length && page.value > 1) {
-      page.value--
-    }
-    deleteVisible.value = false
-    getTableData()
-  }
-}
 
 // 行为控制标记（弹窗内部需要增还是改）
 const type = ref('')
