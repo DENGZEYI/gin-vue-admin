@@ -17,29 +17,6 @@
                 'background-size': 'cover',
               }"
             >
-              <span class="update" @click="openChooseImg">
-                <el-icon>
-                  <edit />
-                </el-icon>
-                重新上传</span>
-            </div>
-            <div class="user-personality">
-              <p v-if="!editFlag" class="nickName">
-                {{ userStore.userInfo.nickName }}
-                <el-icon class="pointer" color="#66b1ff" @click="openEdit">
-                  <edit />
-                </el-icon>
-              </p>
-              <p v-if="editFlag" class="nickName">
-                <el-input v-model="nickName" />
-                <el-icon class="pointer" color="#67c23a" @click="enterEdit">
-                  <check />
-                </el-icon>
-                <el-icon class="pointer" color="#f23c3c" @click="closeEdit">
-                  <close />
-                </el-icon>
-              </p>
-              <p class="person-info">这个家伙很懒，什么都没有留下</p>
             </div>
             <div class="user-information">
               <ul>
@@ -49,38 +26,12 @@
                   </el-icon>
                   {{ userStore.userInfo.nickName }}
                 </li>
-                <el-tooltip
-                  class="item"
-                  effect="light"
-                  content="北京反转极光科技有限公司-技术部-前端事业群"
-                  placement="top"
-                >
-                  <li>
-                    <el-icon>
-                      <data-analysis />
-                    </el-icon>
-                    北京反转极光科技有限公司-技术部-前端事业群
-                  </li>
-                </el-tooltip>
-                <li>
-                  <el-icon>
-                    <video-camera />
-                  </el-icon>
-                  中国·北京市·朝阳区
-                </li>
-                <el-tooltip
-                  class="item"
-                  effect="light"
-                  content="GoLang/JavaScript/Vue/Gorm"
-                  placement="top"
-                >
                   <li>
                     <el-icon>
                       <medal />
                     </el-icon>
                     GoLang/JavaScript/Vue/Gorm
                   </li>
-                </el-tooltip>
               </ul>
             </div>
           </div>
@@ -89,29 +40,8 @@
       <el-col :span="18">
         <div class="user-addcount">
           <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="账号绑定" name="second">
+            <el-tab-pane label="账号操作" name="second">
               <ul>
-                <li>
-                  <p class="title">密保手机</p>
-                  <p class="desc">
-                    已绑定手机:{{ userStore.userInfo.phone }}
-                    <a href="javascript:void(0)" @click="changePhoneFlag = true">立即修改</a>
-                  </p>
-                </li>
-                <li>
-                  <p class="title">密保邮箱</p>
-                  <p class="desc">
-                    已绑定邮箱：{{ userStore.userInfo.email }}
-                    <a href="javascript:void(0)" @click="changeEmailFlag = true">立即修改</a>
-                  </p>
-                </li>
-                <li>
-                  <p class="title">密保问题</p>
-                  <p class="desc">
-                    未设置密保问题
-                    <a href="javascript:void(0)">去设置</a>
-                  </p>
-                </li>
                 <li>
                   <p class="title">修改密码</p>
                   <p class="desc">
@@ -128,8 +58,6 @@
         </div>
       </el-col>
     </el-row>
-
-    <ChooseImg ref="chooseImgRef" @enter-img="enterImg" />
 
     <el-dialog
       v-model="showPassword"
@@ -268,8 +196,6 @@ const userStore = useUserStore()
 const modifyPwdForm = ref(null)
 const showPassword = ref(false)
 const pwdModify = ref({})
-const nickName = ref('')
-const editFlag = ref(false)
 const savePassword = async() => {
   modifyPwdForm.value.validate((valid) => {
     if (valid) {
@@ -297,46 +223,7 @@ const clearPassword = () => {
   modifyPwdForm.value.clearValidate()
 }
 
-const chooseImgRef = ref(null)
-const openChooseImg = () => {
-  chooseImgRef.value.open()
-}
 
-const enterImg = async(url) => {
-  const res = await setSelfInfo({ headerImg: url })
-  if (res.code === 0) {
-    userStore.ResetUserInfo({ headerImg: url })
-    ElMessage({
-      type: 'success',
-      message: '设置成功',
-    })
-  }
-}
-
-const openEdit = () => {
-  nickName.value = userStore.userInfo.nickName
-  editFlag.value = true
-}
-
-const closeEdit = () => {
-  nickName.value = ''
-  editFlag.value = false
-}
-
-const enterEdit = async() => {
-  const res = await setSelfInfo({
-    nickName: nickName.value
-  })
-  if (res.code === 0) {
-    userStore.ResetUserInfo({ nickName: nickName.value })
-    ElMessage({
-      type: 'success',
-      message: '设置成功',
-    })
-  }
-  nickName.value = ''
-  editFlag.value = false
-}
 
 const handleClick = (tab, event) => {
   console.log(tab, event)

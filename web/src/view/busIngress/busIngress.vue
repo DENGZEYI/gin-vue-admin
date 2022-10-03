@@ -11,7 +11,7 @@
                 <el-table-column align="left" label="耗材名称" prop="goods_name" />
                 <el-table-column align="left" label="规格" prop="specification" />
                 <el-table-column align="left" label="申请数量" prop="apply_number" />
-                <el-table-column align="left" label="已到数量" prop="arrival_number" />
+                <el-table-column align="left" label="已入库数量" prop="arrival_number" width="140"/>
                 <el-table-column align="left" label="库存点" prop="group_name" width="140" />
                 <el-table-column align="left" label="供应商名称" prop="provider_name" width="140" />
                 <el-table-column align="left" label="申请时间" width="180">
@@ -23,9 +23,9 @@
                 </el-table-column>
                 <el-table-column align="left" label="审批人" prop="approver_name" width="120" />
                 <el-table-column align="left" label="采购人" prop="purchaser_name" width="120" />
-                <el-table-column align="left" fixed="right" label="选择入库耗材" width="120">
+                <el-table-column align="left" fixed="right" label="按钮组" width="120">
                     <template #default="scope">
-                        <el-button type="primary" @click="addRow(scope.row)">添加</el-button>
+                        <el-button type="primary" @click="addRow(scope.row)">添加到入库单</el-button>
                     </template>
                 </el-table-column>
             </el-table>

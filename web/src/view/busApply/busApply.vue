@@ -11,7 +11,7 @@
                     </el-select>
                 </el-form-item>
                 <!-- 组别 -->
-                <el-form-item label="组别" prop="group_id">
+                <el-form-item label="专业组" prop="group_id">
                     <el-select v-model="searchInfo.group_id" clearable placeholder="请选择"
                         @clear="() => { searchInfo.group_id = undefined }">
                         <el-option v-for="(item, key) in groupOptions" :key="key" :label="item.label"
@@ -30,12 +30,10 @@
         </div>
         <!-- Goods表格 -->
         <div class="gva-table-box">
-            <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID"
-                @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55" />
+            <el-table style="width: 100%" tooltip-effect="dark" :data="tableData" row-key="ID">
                 <el-table-column align="left" label="耗材ID" prop="ID" width="120" />
                 <el-table-column align="left" label="耗材名称" prop="name" width="120" />
-                <el-table-column align="left" label="组别" prop="group_id" width="120">
+                <el-table-column align="left" label="专业组" prop="group_id" width="120">
                     <template #default="scope">{{ filterDict(scope.row.group_id, groupOptions) }}</template>
                 </el-table-column>
                 <el-table-column align="left" label="单位" prop="unit" width="120" />
@@ -84,6 +82,7 @@
                 </div>
                 <!-- 表格主体 -->
                 <el-table style="width: 100%" tooltip-effect="dark" :data="applyFormData.apply_details" row-key="ID">
+                    <el-table-column align="left" label="耗材ID" prop="goods_dict_id" width="200" />
                     <el-table-column align="left" label="耗材名称" prop="goods_dict_name" width="200" />
                     <el-table-column align="left" label="组别" prop="group" width="200" />
                     <el-table-column align="left" label="生产商" prop="factory" width="200" />
@@ -260,9 +259,6 @@ const applyFunc = async () => {
         applyBtnVisible.value = false
     })
 }
-
-
-
 
 
 

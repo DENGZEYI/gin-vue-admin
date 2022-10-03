@@ -44,7 +44,6 @@ func (i *initUser) InitializeData(ctx context.Context) (next context.Context, er
 	if !ok {
 		return ctx, system.ErrMissingDBContext
 	}
-	password := utils.BcryptHash("6447985")
 	adminPassword := utils.BcryptHash("123456")
 
 	entities := []sysModel.SysUser{
@@ -58,15 +57,6 @@ func (i *initUser) InitializeData(ctx context.Context) (next context.Context, er
 			Phone:       "17611111111",
 			Email:       "333333333@qq.com",
 		},
-		{
-			UUID:        uuid.NewV4(),
-			Username:    "a303176530",
-			Password:    password,
-			NickName:    "QMPlusUser",
-			HeaderImg:   "https:///qmplusimg.henrongyi.top/1572075907logo.png",
-			AuthorityId: 9528,
-			Phone:       "17611111111",
-			Email:       "333333333@qq.com"},
 	}
 	if err = db.Create(&entities).Error; err != nil {
 		return ctx, errors.Wrap(err, sysModel.SysUser{}.TableName()+"表数据初始化失败!")

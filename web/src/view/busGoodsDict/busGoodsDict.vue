@@ -96,6 +96,9 @@
             </el-select>
           </el-form-item>
         </el-form-item>
+        <el-form-item label="单位:" prop="unit">
+          <el-input v-model="formData.unit" :clearable="true" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="规格:" prop="specification">
           <el-input v-model="formData.specification" :clearable="true" placeholder="请输入" />
         </el-form-item>
@@ -141,9 +144,10 @@ import { ref, reactive } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
-  name: '',
-  price: 0,
-  specification: '',
+  name: undefined,
+  price: undefined,
+  unit:undefined,
+  specification: undefined,
   factory_id: undefined,
   group_id: undefined,
   provider_id: undefined,
@@ -152,6 +156,21 @@ const formData = ref({
 // 验证规则
 const rules = reactive({
   name: [{
+    required: true,
+    message: '必填项',
+    trigger: ['blur'],
+  }],
+  unit: [{
+    required: true,
+    message: '必填项',
+    trigger: ['blur'],
+  }],
+  specification: [{
+    required: true,
+    message: '必填项',
+    trigger: ['blur'],
+  }],
+  group_id: [{
     required: true,
     message: '必填项',
     trigger: ['blur'],
