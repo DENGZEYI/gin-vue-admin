@@ -81,14 +81,14 @@
                     </el-popover>
                 </div>
                 <!-- 表格主体 -->
-                <el-table style="width: 100%" tooltip-effect="dark" :data="applyFormData.apply_details" row-key="ID">
-                    <el-table-column align="left" label="耗材ID" prop="goods_dict_id" width="200" />
-                    <el-table-column align="left" label="耗材名称" prop="goods_dict_name" width="200" />
-                    <el-table-column align="left" label="组别" prop="group" width="200" />
-                    <el-table-column align="left" label="生产商" prop="factory" width="200" />
-                    <el-table-column align="left" label="单位" prop="unit" width="120" />
-                    <el-table-column align="left" label="耗材规格" prop="specification" width="200" />
-                    <el-table-column align="left" label="申请数量" prop="apply_number" width="200">
+                <el-table :data="applyFormData.apply_details">
+                    <el-table-column align="left" label="耗材ID" prop="goods_dict_id" />
+                    <el-table-column align="left" label="耗材名称" prop="goods_dict_name" />
+                    <el-table-column align="left" label="组别" prop="group" />
+                    <el-table-column align="left" label="生产商" prop="factory" />
+                    <el-table-column align="left" label="单位" prop="unit" />
+                    <el-table-column align="left" label="耗材规格" prop="specification"  />
+                    <el-table-column align="left" label="申请数量" prop="apply_number" >
                         <template #default="scope">
                             <el-form-item label=" " :prop="'apply_details.' + scope.$index + '.apply_number'"
                                 :rules='rules.apply_number'>
@@ -266,6 +266,8 @@ const applyFunc = async () => {
 </script>
   
 <style>
-
+.left{
+    text-align: left
+}
 </style>
   

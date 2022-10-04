@@ -9,6 +9,7 @@
         style="width: 100%">
         <el-table-column label="角色ID" min-width="180" prop="authorityId" />
         <el-table-column align="left" label="角色名称" min-width="180" prop="authorityName" />
+        <el-table-column align="left" label="角色所属专业组" min-width="180" prop="group.name" />
         <el-table-column align="left" label="操作" width="460">
           <template #default="scope">
             <el-button icon="setting" size="small" type="primary" link @click="opdendrawer(scope.row)">设置权限</el-button>
@@ -36,6 +37,11 @@
         </el-form-item>
         <el-form-item label="角色姓名" prop="authorityName">
           <el-input v-model="form.authorityName" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="专业组" prop="group_id">
+          <el-select v-model="form.group_id" placeholder="请选择" :clearable="true">
+            <el-option v-for="(item, key) in groupOptions" :key="key" :label="item.label" :value="item.value" />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -70,6 +76,9 @@ import {
   updateAuthority,
   copyAuthority
 } from '@/api/authority'
+import {
+  getBusDictFunc
+} from '@/utils/format'
 
 import Menus from '@/view/superAdmin/authority/components/menus.vue'
 import Apis from '@/view/superAdmin/authority/components/apis.vue'
@@ -104,7 +113,8 @@ const copyForm = ref({})
 const form = ref({
   authorityId: 0,
   authorityName: '',
-  parentId: 0
+  parentId: 0,
+  group_id: undefined
 })
 const rules = ref({
   authorityId: [
@@ -116,6 +126,9 @@ const rules = ref({
   ],
   parentId: [
     { required: true, message: '请选择父角色', trigger: 'blur' },
+  ],
+  group_id: [
+    { required: true, message: '请选择专业组', trigger: 'blur' },
   ]
 })
 
@@ -124,6 +137,7 @@ const total = ref(0)
 const pageSize = ref(999)
 const tableData = ref([])
 const searchInfo = ref({})
+const groupOptions = ref([])
 
 // 查询
 const getTableData = async () => {
@@ -284,7 +298,8 @@ const enterDialog = () => {
     }
   })
 }
-const setOptions = () => {
+const setOptions = async() => {
+  groupOptions.value = await getBusDictFunc('group')
   AuthorityOption.value = [
     {
       authorityId: 0,

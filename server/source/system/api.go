@@ -190,7 +190,7 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{GVA_MODEL: global.GVA_MODEL{ID: 502}, ApiGroup: "申购单", Method: "PUT", Path: "/busOrder/approveBusOrder", Description: "审批申请单"},
 		{GVA_MODEL: global.GVA_MODEL{ID: 503}, ApiGroup: "申购单", Method: "PUT", Path: "/busOrder/purchaseBusOrder", Description: "采购申请单"},
 		{GVA_MODEL: global.GVA_MODEL{ID: 504}, ApiGroup: "申购单", Method: "GET", Path: "/busOrder/getOrderDetails", Description: "获取申请单详情"},
-		{GVA_MODEL: global.GVA_MODEL{ID: 504}, ApiGroup: "申购单", Method: "GET", Path: "/busOrder/printBusOrder", Description: "打印申购单"},
+		{GVA_MODEL: global.GVA_MODEL{ID: 505}, ApiGroup: "申购单", Method: "GET", Path: "/busOrder/printBusOrder", Description: "打印申购单"},
 		// 入库API
 		{GVA_MODEL: global.GVA_MODEL{ID: 600}, ApiGroup: "入库表", Method: "GET", Path: "/busIngress/getBusIngressList", Description: "获取入库单列表"},
 		{GVA_MODEL: global.GVA_MODEL{ID: 601}, ApiGroup: "入库表", Method: "POST", Path: "/busIngress/ingress", Description: "入库"},

@@ -65,8 +65,9 @@
                 </el-popover>
             </el-form-item>
             <div class="gva-table-box">
-                <el-table :data="ingressFormData.ingress_details">
-                    <el-table-column align="left" label="耗材名称" prop="goods_name" width="120" />
+                <el-table  :data="ingressFormData.ingress_details">
+                    <el-table-column align="left" label="耗材ID" prop="goods_dict_id" />
+                    <el-table-column align="left" label="耗材名称" prop="goods_name" />
                     <el-table-column align="left" label="规格" prop="specification" />
                     <el-table-column align="left" label="批号" prop="batch">
                         <template #default="scope">

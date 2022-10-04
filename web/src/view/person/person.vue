@@ -30,7 +30,7 @@
                     <el-icon>
                       <medal />
                     </el-icon>
-                    GoLang/JavaScript/Vue/Gorm
+                    东方肝胆外科医院检验科
                   </li>
               </ul>
             </div>
