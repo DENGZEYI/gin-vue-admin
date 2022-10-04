@@ -13,3 +13,4 @@ type ApplyState struct {
 
 // Chair 主任的authorityID
 const Chair uint = 1
+const Manager uint = 2

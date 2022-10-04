@@ -4,7 +4,7 @@
 
 const config = {
   appName: '耗材管理系统',
-  appLogo: 'https://www.gin-vue-admin.com/img/logo.png',
+  appLogo: "src/assets/logo_login.png", 
   showViteLogo: true
 }
 
